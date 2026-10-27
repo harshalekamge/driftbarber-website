@@ -79,8 +79,13 @@
           </div>
           <div class="ct-dark" aria-hidden="true">
             <span class="ct-glow g1"></span><span class="ct-glow g2"></span>
-            <span class="ct-art" id="ctArt"></span>
-            <p class="ct-final" data-split>Until you take a seat at <em>Drift</em>…</p>
+            <canvas class="ct-3d" id="pole3d" aria-hidden="true"></canvas>
+            <div class="ct-copy">
+              <p class="ct-kicker">Rajagiriya · Negombo · Since day one</p>
+              <p class="ct-final" data-split>Until you take a seat at <em>Drift</em>…</p>
+              <p class="ct-sub">Two studios, one obsession: the perfect cut. Open every day, 9am – 10.30pm.</p>
+            </div>
+            <span class="ct-grain"></span>
           </div>
         </div>
       </div>
@@ -106,15 +111,14 @@
     <section class="deck" id="deck" data-theme="light">
       <div class="deck-stage" id="deckStage">
         <h2 class="deck-title" id="deckTitle" data-split>Pick your card. We’ll handle the craft.</h2>
+        <!-- 3. STUDIOS slides up inside the same scene while the cards collapse -->
+        <div class="studios" id="studios">
+          <h2 class="studios-title">Two studios.<br />One craft.</h2>
+          <div class="acc" id="acc"><!-- rendered by script.js --></div>
+        </div>
         <div class="deck-cards" id="deckCards"><!-- cards rendered by script.js --></div>
+        <div class="studios-dusk" aria-hidden="true"></div>
       </div>
-    </section>
-
-    <!-- ================= 3. STUDIOS (accordion) ================= -->
-    <section class="studios" id="studios" data-theme="light">
-      <h2 class="studios-title">Two studios.<br />One craft.</h2>
-      <div class="acc" id="acc"><!-- rendered by script.js --></div>
-      <div class="studios-dusk" aria-hidden="true"></div>
     </section>
 
     <!-- ================= 4. FINALE (book) ================= -->
@@ -235,6 +239,7 @@
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/Flip.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
+  <script src="vendor/three.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

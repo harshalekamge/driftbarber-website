@@ -208,7 +208,17 @@ body.grid-ready .filter { opacity: 1; transform: none; pointer-events: auto; }
 .ct-art { position: absolute; right: 4vw; top: 50%; width: min(52vw, 640px); transform: translateY(-50%); color: rgba(255,255,255,.12); animation: spinSlow 60s linear infinite; }
 .ct-art svg { width: 100%; height: auto; fill: none; stroke: currentColor; stroke-width: .6; }
 @keyframes spinSlow { to { transform: translateY(-50%) rotate(360deg); } }
-.ct-final { position: relative; font-size: clamp(36px, 6vw, 96px); font-weight: 700; letter-spacing: -0.045em; line-height: 1; color: var(--white); max-width: 12ch; }
+.ct-3d { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ct-copy { position: relative; z-index: 2; max-width: 620px; }
+.ct-kicker { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.55); margin-bottom: 22px; }
+.ct-final { position: relative; font-size: clamp(34px, 5vw, 78px); font-weight: 300; letter-spacing: -0.04em; line-height: 1.04; color: var(--white); max-width: 12ch; }
+.ct-final em { font-weight: 600; }
+.ct-sub { margin-top: 24px; max-width: 40ch; font-size: clamp(15px, 1.15vw, 18px); line-height: 1.6; color: rgba(255,255,255,.65); }
+.ct-grain { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: .14; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain .9s steps(4) infinite; }
+@keyframes grain { 25% { transform: translate(-2%, 1%); } 50% { transform: translate(1%, -2%); } 75% { transform: translate(2%, 2%); } }
+.ct-dark::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(120% 90% at 30% 50%, transparent 40%, rgba(8,9,26,.65) 100%); }
 
 /* ==========================================================
    2. DECK
@@ -223,7 +233,8 @@ body.grid-ready .filter { opacity: 1; transform: none; pointer-events: auto; }
   position: absolute; z-index: 1; left: 0; right: 0; top: calc(var(--nav-h) - 10px); text-align: center; padding: 0 16px;
   font-size: clamp(28px, 3.4vw, 50px); font-weight: 600; letter-spacing: -0.045em; line-height: 1.05;
 }
-.deck-cards { position: absolute; inset: 0; z-index: 2; }
+.deck-cards { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.deck-cards .card { pointer-events: auto; }
 
 /* the card */
 .card {
@@ -294,6 +305,9 @@ body.deck-mini .deck-cards .card { visibility: hidden; }
 .deck-stage.is-static .deck-cards { position: relative; inset: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
 .deck-stage.is-static .card { position: relative; width: 100%; height: auto; aspect-ratio: 200 / 283; transform: none; }
 .deck-stage.is-static .card.hide { display: none; }
+.deck-stage.is-static .studios { position: relative; inset: auto; visibility: visible; transform: none !important; padding: 90px 0 40px; }
+.deck-stage.is-static .studios-title { color: var(--ink); }
+.deck-stage.is-static .studios-dusk { display: none; }
 
 /* mini deck */
 .mini-deck {
@@ -313,13 +327,14 @@ body.deck-mini .mini-deck { opacity: 1; transform: none; pointer-events: auto; }
 /* ==========================================================
    3. STUDIOS (accordion)
    ========================================================== */
-.studios { position: relative; padding: clamp(110px, 16vh, 170px) clamp(16px, 4vw, 64px) clamp(80px, 12vh, 140px);
-  background:
-    radial-gradient(800px 500px at 0% 20%, rgba(214,206,255,.55), transparent 60%),
-    radial-gradient(800px 500px at 100% 70%, rgba(255,226,200,.55), transparent 60%),
-    var(--bg); }
-.studios-title { text-align: center; font-size: clamp(38px, 5vw, 72px); font-weight: 400; letter-spacing: -0.045em; line-height: 1.02; margin-bottom: clamp(36px, 6vh, 64px); }
-.acc { display: flex; gap: 14px; height: clamp(440px, 60vh, 560px); max-width: 1380px; margin: 0 auto; }
+.studios {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: calc(var(--nav-h) + 6px) clamp(16px, 4vw, 64px) clamp(28px, 6vh, 64px);
+  visibility: hidden; will-change: transform;
+}
+.studios-title { text-align: center; font-size: clamp(34px, 4.4vw, 66px); font-weight: 400; letter-spacing: -0.045em; line-height: 1.02; margin-bottom: clamp(20px, 4.5vh, 48px); color: #b9bdd0; }
+.acc { display: flex; gap: 14px; height: clamp(340px, 58vh, 540px); width: 100%; max-width: 1380px; margin: 0 auto; }
 .acc-item {
   position: relative; flex: 0 0 104px; min-width: 0; border-radius: 52px; overflow: hidden; cursor: pointer;
   background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.6));
@@ -360,7 +375,7 @@ body.deck-mini .mini-deck { opacity: 1; transform: none; pointer-events: auto; }
 .finale-floats { position: absolute; inset: -10% 0; pointer-events: none; }
 .float-card { position: absolute; width: 150px; height: 212px; will-change: transform; }
 .fc-fly { position: absolute; inset: 0; will-change: transform, opacity; }
-.studios-dusk { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(23,26,61,0), #171a3d 85%); opacity: 0; pointer-events: none; z-index: 3; }
+.studios-dusk { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(23,26,61,.25), #171a3d 90%); opacity: 0; pointer-events: none; z-index: 4; }
 .fc-fly > span { position: absolute; inset: 0; border-radius: 12px; background: var(--g); opacity: .85; box-shadow: 0 20px 40px -20px rgba(0,0,0,.7); animation: bob var(--dur, 9s) ease-in-out infinite alternate; }
 .fc-fly > span::before { content: ""; position: absolute; inset: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,.5); }
 .fc-fly > span b { position: absolute; left: 10px; top: 10px; font-size: 10.5px; font-weight: 600; color: var(--fg, var(--ink)); max-width: 9ch; line-height: 1.1; }
@@ -482,7 +497,8 @@ body.deck-mini .mini-deck { opacity: 1; transform: none; pointer-events: auto; }
   .center-tile { left: 5%; top: 27%; width: 90%; height: 46%; }
   .tile[data-mobile="0"] { display: none; }
   .tile { border-radius: 16px; }
-  .ct-art { width: 120vw; right: -40vw; }
+  .ct-dark { align-items: flex-end; padding-bottom: 12vh; }
+  .ct-sub { display: none; }
   .mini-deck { display: none; }
 
   .acc { flex-direction: column; height: auto; }

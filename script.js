@@ -227,7 +227,6 @@ mosaic.insertAdjacentHTML("afterbegin", TILES.map((t) => {
 const mobileTileCSS = document.createElement("style");
 mobileTileCSS.textContent = `@media (max-width:820px){.tile[data-mobile="1"]{left:var(--ml);top:var(--mt);width:var(--mw);height:var(--mh)}}`;
 document.head.appendChild(mobileTileCSS);
-$("#ctArt").innerHTML = ICONS.scissors;
 
 // cards
 const deckCards = $("#deckCards");
@@ -288,7 +287,7 @@ setInterval(paintOpenStatus, 60000);
 /* ==========================================================
    SMOOTH SCROLL (Lenis) + progress + nav theme
    ========================================================== */
-const lenis = new Lenis({ lerp: REDUCED ? 1 : 0.075, smoothWheel: !REDUCED });
+const lenis = new Lenis({ lerp: REDUCED ? 1 : 0.065, smoothWheel: !REDUCED });
 lenis.on("scroll", ScrollTrigger.update);
 gsap.ticker.add((t) => { lenis.raf(t * 1000); if (dLenis) dLenis.raf(t * 1000); });
 gsap.ticker.lagSmoothing(0);
@@ -322,6 +321,146 @@ gsap.timeline({ delay: 0.15 })
   .from(".nav-right > *, .nav-links", { y: -16, opacity: 0, duration: 0.7, stagger: 0.06, ease: "power3.out" }, "-=0.8");
 
 /* ==========================================================
+   3D SCENE — rotating barber pole + floating Drift cards (Three.js)
+   ========================================================== */
+const POLE = { reveal: 0 };
+function buildPole3D() {
+  const canvas = $("#pole3d");
+  if (!window.THREE || !canvas) return;
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+  camera.position.set(0, 0.2, 13);
+
+  // studio-style reflections for the chrome and glass
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const env = new THREE.Scene();
+  env.add(new THREE.Mesh(new THREE.BoxGeometry(30, 30, 30), new THREE.MeshBasicMaterial({ color: 0x181b40, side: THREE.BackSide })));
+  const panel = (color, x, y, z, w, h, ry = 0) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
+    m.position.set(x, y, z); m.rotation.y = ry; env.add(m);
+  };
+  panel(0xffe2b0, -8, 4, 2, 6, 10, Math.PI / 2);
+  panel(0xff7a66, 8, -1, 0, 4, 12, -Math.PI / 2);
+  panel(0x9fb4ff, 0, 9, 0, 14, 3);
+  panel(0xffffff, 0, 0, 12, 10, 4, Math.PI);
+  scene.environment = pmrem.fromScene(env, 0.04).texture;
+
+  // barber-pole stripes (seamless diagonal bands)
+  const S = 256, tc = document.createElement("canvas"); tc.width = tc.height = S;
+  const ctx = tc.getContext("2d"), img = ctx.createImageData(S, S);
+  const bands = [[239, 90, 67], [248, 245, 240], [43, 58, 143], [248, 245, 240]];
+  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+    const c = bands[Math.floor(((x + y) % S) / (S / 4))], o = (y * S + x) * 4;
+    img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2]; img.data[o + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  const stripes = new THREE.CanvasTexture(tc);
+  stripes.wrapS = stripes.wrapT = THREE.RepeatWrapping;
+  stripes.repeat.set(2, 2.6);
+  stripes.encoding = THREE.sRGBEncoding;
+  stripes.anisotropy = 8;
+
+  const pole = new THREE.Group();
+  const chrome = new THREE.MeshStandardMaterial({ color: 0xf2f2f6, metalness: 1, roughness: 0.18, envMapIntensity: 1.4 });
+  const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 4.2, 96, 1, true),
+    new THREE.MeshStandardMaterial({ map: stripes, roughness: 0.35, metalness: 0.05 }));
+  const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 4.3, 96, 1, true),
+    new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.2, roughness: 0.04, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 2.2, side: THREE.DoubleSide, depthWrite: false }));
+  const capTop = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.32, 96), chrome); capTop.position.y = 2.3;
+  const ringTop = new THREE.Mesh(new THREE.TorusGeometry(0.92, 0.06, 24, 96), chrome); ringTop.rotation.x = Math.PI / 2; ringTop.position.y = 2.12;
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(0.82, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2), chrome); dome.position.y = 2.46;
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.16, 32, 16), chrome); knob.position.y = 3.3;
+  const capBot = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.32, 96), chrome); capBot.position.y = -2.3;
+  const ringBot = ringTop.clone(); ringBot.position.y = -2.12;
+  const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.82, 0.12, 0.8, 64), chrome); cone.position.y = -2.86;
+  pole.add(inner, glass, capTop, ringTop, dome, knob, capBot, ringBot, cone);
+  pole.rotation.z = -0.1;
+  scene.add(pole);
+
+  // floating 3D Drift cards orbiting the pole
+  const cardTex = (c) => {
+    const w = 256, h = 362, cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+    const g = cv.getContext("2d"), cols = c.g.match(/#[0-9a-f]{6}/gi) || ["#ffffff", "#dddddd"];
+    const r = 26;
+    g.beginPath(); g.moveTo(r, 0); g.arcTo(w, 0, w, h, r); g.arcTo(w, h, 0, h, r); g.arcTo(0, h, 0, 0, r); g.arcTo(0, 0, w, 0, r); g.closePath(); g.clip();
+    const lg = g.createLinearGradient(0, 0, w * 0.4, h);
+    cols.forEach((cc, k) => lg.addColorStop(k / Math.max(1, cols.length - 1), cc));
+    g.fillStyle = lg; g.fillRect(0, 0, w, h);
+    g.strokeStyle = "rgba(255,255,255,.65)"; g.lineWidth = 2; g.beginPath(); g.roundRect ? g.roundRect(10, 10, w - 20, h - 20, 18) : g.rect(10, 10, w - 20, h - 20); g.stroke();
+    g.fillStyle = c.fg || "#141833"; g.font = "600 26px 'Inter Tight', Arial, sans-serif";
+    c.title.split(" ").reduce((lines, wd) => { const l = lines[lines.length - 1]; (l + " " + wd).trim().length > 11 ? lines.push(wd) : (lines[lines.length - 1] = (l + " " + wd).trim()); return lines; }, [""])
+      .forEach((ln, k) => g.fillText(ln, 22, 46 + k * 30));
+    g.font = "700 13px Arial"; g.globalAlpha = 0.8; g.fillText(c.tag.toUpperCase().slice(0, 24), 22, h - 26);
+    const t = new THREE.CanvasTexture(cv); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t;
+  };
+  const floaters = [0, 1, 2, 6, 13].map((ci, k) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.63),
+      new THREE.MeshBasicMaterial({ map: cardTex(CARDS[ci]), transparent: true, side: THREE.DoubleSide, toneMapped: false }));
+    m.userData = { r: 2.3 + (k % 2) * 0.55, a: (k / 5) * Math.PI * 2, y: -1.4 + k * 0.7, sp: 0.18 + (k % 3) * 0.05, bob: k * 1.3 };
+    scene.add(m); return m;
+  });
+
+  // dust particles
+  const N_P = 320, pos = new Float32Array(N_P * 3);
+  for (let k = 0; k < N_P; k++) { pos[k * 3] = (Math.random() - 0.5) * 16; pos[k * 3 + 1] = (Math.random() - 0.5) * 9; pos[k * 3 + 2] = (Math.random() - 0.5) * 8; }
+  const pg = new THREE.BufferGeometry(); pg.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  const dust = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0xffd9a8, size: 0.035, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending }));
+  scene.add(dust);
+
+  scene.add(new THREE.AmbientLight(0x8890ff, 0.35));
+  const key = new THREE.DirectionalLight(0xffe0b8, 2.2); key.position.set(-4, 5, 6); scene.add(key);
+  const rim1 = new THREE.PointLight(0xff5a43, 30, 20); rim1.position.set(4, 1, -2); scene.add(rim1);
+  const rim2 = new THREE.PointLight(0x6f86ff, 24, 20); rim2.position.set(-3, -2, -3); scene.add(rim2);
+
+  // pointer parallax
+  const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
+  addEventListener("pointermove", (e) => { ptr.tx = e.clientX / innerWidth - 0.5; ptr.ty = e.clientY / innerHeight - 0.5; });
+
+  const darkEl = $(".ct-dark");
+  let last = performance.now(), cw = 0, ch = 0;
+  function frame(now) {
+    requestAnimationFrame(frame);
+    const vis = POLE.reveal > 0.001 && parseFloat(getComputedStyle(darkEl).opacity) > 0.01 && scrollY < innerHeight * 12;
+    if (!vis) { last = now; return; }
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (w !== cw || h !== ch) { cw = w; ch = h; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+    const wide = camera.aspect > 1.15;
+    const R = POLE.reveal;
+    ptr.x += (ptr.tx - ptr.x) * 0.05; ptr.y += (ptr.ty - ptr.y) * 0.05;
+
+    stripes.offset.y -= dt * 0.22; // the classic spiralling stripes
+    pole.position.set(wide ? 2.9 * Math.min(1.4, camera.aspect / 1.6) : 0, wide ? -0.1 : 1.2, 0);
+    pole.rotation.y += dt * 0.35;
+    pole.rotation.x = ptr.y * 0.25;
+    pole.rotation.z = -0.1 + ptr.x * -0.15 + (1 - R) * 0.6;
+    const sc = (wide ? 1 : 0.8) * (0.6 + 0.4 * R);
+    pole.scale.setScalar(sc);
+    floaters.forEach((m) => {
+      const u = m.userData; u.a += dt * u.sp;
+      m.position.set(pole.position.x + Math.cos(u.a) * u.r * sc, u.y * sc + Math.sin(now / 1000 + u.bob) * 0.15, Math.sin(u.a) * u.r * sc);
+      m.rotation.y = -u.a + Math.PI / 2 + Math.sin(now / 1500 + u.bob) * 0.3;
+      m.rotation.z = Math.sin(now / 1800 + u.bob) * 0.12;
+      m.material.opacity = R;
+    });
+    dust.rotation.y += dt * 0.02;
+    dust.material.opacity = 0.7 * R;
+    camera.position.x = ptr.x * 0.8; camera.position.y = 0.2 - ptr.y * 0.5;
+    camera.lookAt(wide ? 1.2 : 0, 0, 0);
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(frame);
+}
+buildPole3D();
+
+/* ==========================================================
    1. INTRO — tiles fly in, center tile tells a story, expands full-screen
    ========================================================== */
 function buildIntro() {
@@ -331,7 +470,7 @@ function buildIntro() {
 
   const tl = gsap.timeline({
     defaults: { ease: "none" },
-    scrollTrigger: { trigger: "#intro", start: "top top", end: () => "+=" + innerHeight * 5.2, pin: true, scrub: 1.2, invalidateOnRefresh: true },
+    scrollTrigger: { trigger: "#intro", start: "top top", end: () => "+=" + innerHeight * 7.5, pin: true, scrub: 1.6, invalidateOnRefresh: true },
   });
   tl.fromTo(tiles,
       { y: (i, el) => innerHeight * (0.85 + parseFloat(el.dataset.depth) * 1.0), scale: 0.9, rotation: (i) => (i % 2 ? 4 : -4) },
@@ -340,18 +479,21 @@ function buildIntro() {
     .to("#hero", { opacity: 0, y: -50, scale: 0.94, duration: 0.6 }, 1.0)
     .fromTo("#centerTile", { opacity: 0, scale: 0.86, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "power2.out" }, 1.15)
     .fromTo(words(".ct-line1"), { yPercent: 115 }, { yPercent: 0, stagger: 0.04, duration: 0.45, ease: "power2.out" }, 1.4)
-    .to({}, { duration: 0.6 })
+    .to({}, { duration: 1 })
     .to(words(".ct-line1"), { yPercent: -115, stagger: 0.03, duration: 0.4, ease: "power2.in" })
     .fromTo(words(".ct-line2"), { yPercent: 115 }, { yPercent: 0, stagger: 0.04, duration: 0.45, ease: "power2.out" }, "<0.2")
     .to(".mosaic-dim", { opacity: 0.55, duration: 0.6 }, "<")
-    .to({}, { duration: 0.6 })
+    .to({}, { duration: 1 })
     .addLabel("expand")
     .to(".ct-light", { opacity: 0, duration: 0.3 }, "expand")
-    .to("#centerTile", { left: 0, top: 0, width: "100%", height: "100%", borderRadius: 0, duration: 1.1, ease: "power2.inOut" }, "expand")
+    .to("#centerTile", { left: 0, top: 0, width: "100%", height: "100%", borderRadius: 0, duration: 1.6, ease: "power2.inOut" }, "expand")
     .to(".ct-dark", { opacity: 1, duration: 0.6 }, "expand+=0.25")
     .fromTo(tiles, { x: 0, y: 0, scale: 1, opacity: 1 }, { x: pushX, y: pushY, scale: 1.2, opacity: 0, duration: 1.1, ease: "power2.inOut", immediateRender: false }, "expand")
-    .fromTo(words(".ct-final"), { yPercent: 115 }, { yPercent: 0, stagger: 0.07, duration: 0.6, ease: "power3.out" }, "expand+=0.9")
-    .to({}, { duration: 0.7 });
+    .fromTo(".ct-kicker", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "expand+=1.1")
+    .fromTo(words(".ct-final"), { yPercent: 115 }, { yPercent: 0, stagger: 0.07, duration: 0.8, ease: "power3.out" }, "expand+=1.25")
+    .fromTo(".ct-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, "expand+=1.8")
+    .to(POLE, { reveal: 1, duration: 1.6, ease: "power2.out" }, "expand+=0.6")
+    .to({}, { duration: 1.4 });
   return tl;
 }
 
@@ -486,17 +628,26 @@ function buildDeckDesktop() {
     defaults: { ease: "none" },
     onUpdate: renderDeck,
     scrollTrigger: {
-      trigger: "#deck", start: "top top", end: () => "+=" + innerHeight * 6.8, pin: true, scrub: 1.2,
+      trigger: "#deck", start: "top top", end: () => "+=" + innerHeight * 12, pin: true, scrub: 1.6,
       invalidateOnRefresh: true,
       onRefresh: () => { measureStage(); renderDeck(); },
     },
   });
-  deckTL.fromTo(deck, { enter: 0 }, { enter: 1, duration: 0.9, ease: "power3.out" }, 0)
-    .fromTo(deck, { sweep: 30 }, { sweep: 30 + 9.4 * FAN_STEP, duration: 3, ease: "power1.inOut" }, 0.1)
-    .to(deck, { deal: 1, duration: 1.6, ease: "power1.inOut" })
+  gsap.set("#studios", { visibility: "visible", yPercent: 100 });
+  deckTL.fromTo(deck, { enter: 0 }, { enter: 1, duration: 1.4, ease: "power3.out" }, 0)
+    .fromTo(deck, { sweep: 30 }, { sweep: 30 + 9.4 * FAN_STEP, duration: 4.4, ease: "power1.inOut" }, 0.1)
+    .to(deck, { deal: 1, duration: 2.6, ease: "power1.inOut" })
     .addLabel("grid")
-    .to({}, { duration: 1.3 })
-    .to(deck, { shrink: 1, duration: 1.2, ease: "power1.inOut" });
+    .to({}, { duration: 1.8 })
+    .addLabel("exit")
+    // the grid squeezes toward the corner while the studios slide up underneath
+    .to(deck, { shrink: 0.45, duration: 2, ease: "power1.inOut" }, "exit")
+    .fromTo("#studios", { yPercent: 100 }, { yPercent: 0, duration: 2.2, ease: "power2.out" }, "exit+=0.6")
+    .fromTo(".studios-title", { color: "#b9bdd0" }, { color: "#141833", duration: 1.4 }, "exit+=1.8")
+    .fromTo(".acc-item", { y: 80 }, { y: 0, duration: 1.8, stagger: 0.12, ease: "power2.out" }, "exit+=0.9")
+    .to(deck, { shrink: 1, duration: 2, ease: "power1.inOut" })
+    .addLabel("studios")
+    .to({}, { duration: 1.8 });
   gsap.fromTo(words("#deckTitle"), { yPercent: 115 }, {
     yPercent: 0, stagger: 0.04, duration: 0.9, ease: "power4.out",
     scrollTrigger: { trigger: "#deck", start: "top 70%", toggleActions: "play none none reverse" },
@@ -538,6 +689,7 @@ function buildDeckDesktop() {
     });
     document.body.classList.remove("grid-ready", "deck-mini");
     $("#deckTitle").style.opacity = "";
+    gsap.set("#studios", { clearProps: "all" });
     gridReady = false; deckTL = null;
   };
 }
@@ -560,18 +712,21 @@ function buildDeckMobile() {
 }
 
 /* scroll position where the grid is fully dealt (desktop) */
-function gridScrollY() {
+function labelScrollY(label, extra = 0) {
   if (deckTL && deckTL.scrollTrigger) {
     const st = deckTL.scrollTrigger;
-    const p = (deckTL.labels.grid + 0.5) / deckTL.duration();
+    const p = Math.min(1, (deckTL.labels[label] + extra) / deckTL.duration());
     return st.start + p * (st.end - st.start);
   }
-  return $("#deck").getBoundingClientRect().top + scrollY - 10;
+  return null;
+}
+function gridScrollY() {
+  return labelScrollY("grid", 0.6) ?? $("#deck").getBoundingClientRect().top + scrollY - 10;
 }
 function goTo(target) {
   const y = target === "grid" ? gridScrollY()
     : target === "top" ? 0
-    : target === "studios" ? $("#studios").getBoundingClientRect().top + scrollY
+    : target === "studios" ? (labelScrollY("studios", 0.6) ?? $("#studios").getBoundingClientRect().top + scrollY)
     : target === "finale" ? $("#finale").getBoundingClientRect().top + scrollY
     : target;
   lenis.scrollTo(y, { duration: 1.8, easing: (t) => 1 - Math.pow(1 - t, 4) });
@@ -615,11 +770,11 @@ $("#miniDeck").addEventListener("click", () => goTo("grid"));
 /* ==========================================================
    3. STUDIOS — heading ink-in, accordion rise, expand on click
    ========================================================== */
-function buildStudios() {
-  gsap.fromTo(".studios-title", { color: "#b9bdd0" }, { color: "#141833", ease: "none",
-    scrollTrigger: { trigger: "#studios", start: "top 85%", end: "top 25%", scrub: true } });
-  gsap.from(".studios-title", { y: 60, opacity: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: "#studios", start: "top 80%" } });
-  gsap.from(".acc-item", { y: 120, opacity: 0, duration: 1.1, stagger: 0.08, ease: "power3.out",
+function buildStudios(isDesktop) {
+  if (isDesktop) return; // on desktop the studios ride inside the deck scene
+  gsap.fromTo(".studios-title", { color: "#b9bdd0", y: 50, opacity: 0 }, { color: "#141833", y: 0, opacity: 1, duration: 1.2, ease: "power3.out",
+    scrollTrigger: { trigger: "#studios", start: "top 80%" } });
+  gsap.from(".acc-item", { y: 80, opacity: 0, duration: 1.1, stagger: 0.1, ease: "power3.out",
     scrollTrigger: { trigger: ".acc", start: "top 88%" } });
 }
 $$(".acc-item").forEach((item) => {
@@ -630,7 +785,7 @@ $$(".acc-item").forEach((item) => {
     const c = $(".acc-content", item);
     gsap.fromTo($$(".acc-text > *", c), { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, delay: 0.35, stagger: 0.06, ease: "power3.out" });
     gsap.fromTo($(".acc-visual svg", c), { scale: 0.8, rotation: -8, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.9, delay: 0.4, ease: "power3.out" });
-    setTimeout(() => ScrollTrigger.refresh(), 800);
+    if (innerWidth <= 820) setTimeout(() => ScrollTrigger.refresh(), 800);
   };
   item.addEventListener("click", open);
   item.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
@@ -643,7 +798,7 @@ $$('.acc a[href="#finale"]').forEach((a) => a.addEventListener("click", (e) => {
 function buildFinale() {
   // the studios section dims as the dark finale approaches
   gsap.fromTo(".studios-dusk", { opacity: 0 }, { opacity: 1, ease: "none",
-    scrollTrigger: { trigger: "#studios", start: "bottom 95%", end: "bottom top", scrub: true } });
+    scrollTrigger: { trigger: "#finale", start: "top bottom", end: "top 30%", scrub: true } });
 
   // cards burst out of the corner deck and scatter across the finale
   const fin = $("#finale");
@@ -654,7 +809,7 @@ function buildFinale() {
     gsap.fromTo(fly,
       { x: offX, y: offY, scale: 0.3, rotation: () => gsap.utils.random(-30, 30), opacity: 0 },
       { x: 0, y: 0, scale: 1, rotation: 0, opacity: 1, ease: "power2.out",
-        scrollTrigger: { trigger: fin, start: () => `top ${55 + (k % 6) * 6}%`, end: "top top", scrub: 1.2, invalidateOnRefresh: true } });
+        scrollTrigger: { trigger: fin, start: () => `top ${55 + (k % 6) * 6}%`, end: "top top", scrub: 1.6, invalidateOnRefresh: true } });
     gsap.fromTo(el, { y: 0 }, { y: -260 * el.dataset.speed, ease: "none",
       scrollTrigger: { trigger: fin, start: "top top", end: "bottom top", scrub: true } });
   });
@@ -673,7 +828,7 @@ const mm = gsap.matchMedia();
 mm.add({ desktop: "(min-width: 821px)", mobile: "(max-width: 820px)" }, (ctx) => {
   buildIntro();
   const cleanup = ctx.conditions.desktop ? buildDeckDesktop() : buildDeckMobile();
-  buildStudios();
+  buildStudios(ctx.conditions.desktop);
   buildFinale();
   return cleanup;
 });
