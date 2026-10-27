@@ -240,16 +240,46 @@ body.grid-ready .filter { opacity: 1; transform: none; pointer-events: auto; }
   transition: box-shadow .35s;
 }
 .card .face::before { content: ""; position: absolute; inset: 7px; border-radius: 12px; border: 1px solid rgba(255,255,255,.6); pointer-events: none; }
-.card .face::after { content: ""; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light; opacity: .55;
+.card .face::after { content: ""; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light; opacity: .6;
   background:
     radial-gradient(120% 60% at 15% 0%, rgba(255,255,255,.8), transparent 55%),
-    repeating-linear-gradient(120deg, rgba(255,255,255,.07) 0 1px, transparent 1px 4px); }
-.card:hover .face { box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 34px 50px -22px rgba(20,24,60,.55); }
+    repeating-linear-gradient(120deg, rgba(255,255,255,.09) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(30deg, rgba(0,0,0,.04) 0 1px, transparent 1px 3px); }
+/* smooth 3D tilt that follows the pointer */
+.card .face {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .6s cubic-bezier(.2,.8,.2,1);
+}
+.card.is-hover .face {
+  transition: transform .18s ease-out, box-shadow .6s cubic-bezier(.2,.8,.2,1);
+  box-shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 50px 70px -28px rgba(20,24,60,.55), 0 0 0 1px rgba(255,255,255,.5);
+}
+.card .face .foil,
+.card .face .rim { position: absolute; pointer-events: none; opacity: 0; transition: opacity .6s cubic-bezier(.2,.8,.2,1); }
+/* holographic sheen that tracks the pointer */
+.card .face .foil {
+  inset: 0; z-index: 3; border-radius: inherit; mix-blend-mode: overlay;
+  background:
+    radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(255,255,255,.75), rgba(255,255,255,0) 42%),
+    linear-gradient(115deg, transparent 18%, rgba(255,140,210,.45) 34%, rgba(130,220,255,.45) 48%, rgba(170,255,180,.4) 60%, rgba(255,240,150,.35) 70%, transparent 84%);
+  background-size: 100% 100%, 260% 260%;
+  background-position: center, var(--mx, 50%) var(--my, 50%);
+}
+/* rainbow foil edge */
+.card .face .rim {
+  inset: 6px; z-index: 3; border-radius: 13px; padding: 1.6px;
+  background: conic-gradient(from 210deg at var(--mx, 50%) var(--my, 50%), #ff9ad5, #9fdcff, #b8ffb5, #fff39a, #ffb3a1, #c9a8ff, #ff9ad5);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.card.is-hover .face .foil { opacity: .9; }
+.card.is-hover .face .rim { opacity: 1; }
+.card.is-hover .c-icon { transform: scale(1.08) translateY(-4px); color: rgba(255,255,255,.95); }
+.card .c-icon { transition: transform .7s cubic-bezier(.2,.8,.2,1), color .6s; }
 .card:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
 .c-title { position: relative; z-index: 2; font-size: 15.5px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.12; max-width: 9.5ch; }
 .c-icon { position: absolute; inset: 20% 10% 18%; z-index: 1; display: grid; place-items: center; color: rgba(255,255,255,.78); transition: transform .5s var(--ease); }
 .c-icon svg { width: 84%; height: auto; stroke: currentColor; stroke-width: 1.3; fill: none; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 6px 10px rgba(0,0,0,.08)); }
-.card:hover .c-icon { transform: scale(1.06) translateY(-3px); }
 .c-foot { position: relative; z-index: 2; display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; }
 .c-tag { font-size: 8.8px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; line-height: 1.3; max-width: 15ch; opacity: .85; }
 .c-mark { font-size: 10.5px; letter-spacing: -0.02em; white-space: nowrap; opacity: .85; }
@@ -328,10 +358,12 @@ body.deck-mini .mini-deck { opacity: 1; transform: none; pointer-events: auto; }
 .finale { position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden; color: var(--white);
   background: radial-gradient(90% 70% at 70% 30%, #262c66 0%, #171a3d 55%, #0f1129 100%); display: flex; flex-direction: column; }
 .finale-floats { position: absolute; inset: -10% 0; pointer-events: none; }
-.float-card { position: absolute; width: 120px; height: 170px; will-change: transform; }
-.float-card > span { position: absolute; inset: 0; border-radius: 12px; background: var(--g); opacity: .85; box-shadow: 0 20px 40px -20px rgba(0,0,0,.7); animation: bob var(--dur, 9s) ease-in-out infinite alternate; }
-.float-card > span::before { content: ""; position: absolute; inset: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,.5); }
-.float-card > span b { position: absolute; left: 10px; top: 10px; font-size: 10.5px; font-weight: 600; color: var(--fg, var(--ink)); max-width: 9ch; line-height: 1.1; }
+.float-card { position: absolute; width: 150px; height: 212px; will-change: transform; }
+.fc-fly { position: absolute; inset: 0; will-change: transform, opacity; }
+.studios-dusk { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(23,26,61,0), #171a3d 85%); opacity: 0; pointer-events: none; z-index: 3; }
+.fc-fly > span { position: absolute; inset: 0; border-radius: 12px; background: var(--g); opacity: .85; box-shadow: 0 20px 40px -20px rgba(0,0,0,.7); animation: bob var(--dur, 9s) ease-in-out infinite alternate; }
+.fc-fly > span::before { content: ""; position: absolute; inset: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,.5); }
+.fc-fly > span b { position: absolute; left: 10px; top: 10px; font-size: 10.5px; font-weight: 600; color: var(--fg, var(--ink)); max-width: 9ch; line-height: 1.1; }
 @keyframes bob { from { transform: rotate(var(--r1, -4deg)) translateY(0); } to { transform: rotate(var(--r2, 4deg)) translateY(-18px); } }
 .finale-inner { position: relative; z-index: 2; flex: 1; display: grid; grid-template-columns: 1fr minmax(320px, 470px); align-items: center; gap: clamp(28px, 6vw, 100px);
   max-width: 1200px; width: 100%; margin: 0 auto; padding: calc(var(--nav-h) + 30px) clamp(16px, 4vw, 48px) 40px; }
@@ -480,5 +512,8 @@ body.deck-mini .mini-deck { opacity: 1; transform: none; pointer-events: auto; }
   .d-cue { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .blob, .ct-art, .ct-glow, .float-card > span, .hero-cue svg { animation: none !important; }
+  .blob, .ct-art, .ct-glow, .fc-fly > span, .hero-cue svg { animation: none !important; }
 }
+body.deck-scatter .mini-deck { opacity: 0; transform: scale(.4) translate(20px, 20px); pointer-events: none; }
+/* finale cards keep the glassy see-through look */
+.fc-fly > span { opacity: .82; }

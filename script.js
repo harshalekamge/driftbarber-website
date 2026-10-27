@@ -191,6 +191,7 @@ function cardHTML(c, i) {
       <span class="c-title">${c.title}</span>
       <span class="c-icon" aria-hidden="true">${ICONS[c.icon]}</span>
       <span class="c-foot"><span class="c-tag">${c.tag}</span><span class="c-mark"><b>Drift</b><i>${c.catLabel}</i></span></span>
+      <span class="foil" aria-hidden="true"></span><span class="rim" aria-hidden="true"></span>
     </span></button>`;
 }
 
@@ -277,7 +278,7 @@ const FLOAT_POS = [[4, 8], [16, 62], [28, 20], [8, 84], [47, 4], [52, 78], [64, 
 floats.innerHTML = FLOAT_POS.map(([x, y], k) => {
   const c = CARDS[k % N];
   return `<div class="float-card" data-speed="${(0.4 + (k % 5) * 0.25).toFixed(2)}" style="left:${x}%;top:${y}%">
-    <span style="--g:${c.g};--fg:${c.fg || "#141833"};--dur:${7 + (k % 4) * 2}s;--r1:${-8 + (k % 5) * 3}deg;--r2:${6 - (k % 4) * 3}deg"><b>${c.title}</b></span></div>`;
+    <div class="fc-fly"><span style="--g:${c.g};--fg:${c.fg || "#141833"};--dur:${7 + (k % 4) * 2}s;--r1:${-8 + (k % 5) * 3}deg;--r2:${6 - (k % 4) * 3}deg"><b>${c.title}</b></span></div></div>`;
 }).join("");
 
 $("#year").textContent = new Date().getFullYear();
@@ -287,7 +288,7 @@ setInterval(paintOpenStatus, 60000);
 /* ==========================================================
    SMOOTH SCROLL (Lenis) + progress + nav theme
    ========================================================== */
-const lenis = new Lenis({ lerp: REDUCED ? 1 : 0.085, smoothWheel: !REDUCED });
+const lenis = new Lenis({ lerp: REDUCED ? 1 : 0.075, smoothWheel: !REDUCED });
 lenis.on("scroll", ScrollTrigger.update);
 gsap.ticker.add((t) => { lenis.raf(t * 1000); if (dLenis) dLenis.raf(t * 1000); });
 gsap.ticker.lagSmoothing(0);
@@ -330,7 +331,7 @@ function buildIntro() {
 
   const tl = gsap.timeline({
     defaults: { ease: "none" },
-    scrollTrigger: { trigger: "#intro", start: "top top", end: () => "+=" + innerHeight * 5.2, pin: true, scrub: 0.9, invalidateOnRefresh: true },
+    scrollTrigger: { trigger: "#intro", start: "top top", end: () => "+=" + innerHeight * 5.2, pin: true, scrub: 1.2, invalidateOnRefresh: true },
   });
   tl.fromTo(tiles,
       { y: (i, el) => innerHeight * (0.85 + parseFloat(el.dataset.depth) * 1.0), scale: 0.9, rotation: (i) => (i % 2 ? 4 : -4) },
@@ -397,48 +398,81 @@ function gridTargets(key) {
 }
 
 function renderDeck() {
-  const px = stageW / 2;
-  const py = stageH * 1.62 + (1 - deck.enter) * stageH * 0.9;
-  const R = stageH * 1.1;
-  const fanS = (stageH * 0.42) / BASE_H;
-  const step = 11.5;
-  const winD = 0.5, winS = 0.55;
+  const W = stageW, H = stageH;
+  const R = H * 1.2;
+  const px = W / 2;
+  const py = H * 1.68 + (1 - deck.enter) * H * 0.95;
+  const fanS = (H * 0.5) / BASE_H;
+  const step = FAN_STEP;
+  const winD = 0.42;
+  // compact phase (grid squeezes toward the corner), then pile phase
+  const compact = easeIO(clamp01(deck.shrink / 0.45));
+  const pileP = clamp01((deck.shrink - 0.35) / 0.65);
+  const ax = W - 40, ay = H - 20;
+
+  // total "spread" each card gets from hovered neighbours (fan only)
+  const spread = new Array(N).fill(0);
+  hoverState.forEach((h, k) => {
+    if (h.v < 0.001) return;
+    for (let j = 0; j < N; j++) if (j !== k) {
+      const d = j - k;
+      spread[j] += Math.sign(d) * h.v * 3.2 * Math.max(0, 1 - (Math.abs(d) - 1) * 0.45);
+    }
+  });
+
   cardEls.forEach((el, i) => {
-    const a = deck.sweep - i * step;
+    const hv = hoverState[i].v;
+    const a = deck.sweep - i * step - spread[i];
     const rad = (a * Math.PI) / 180;
-    const fx = px + R * Math.sin(rad), fy = py - R * Math.cos(rad);
+    const lift = hv * 46; // hovered card rises out of the fan
+    const fx = px + (R + lift) * Math.sin(rad), fy = py - (R + lift) * Math.cos(rad);
     const t = easeIO(clamp01((deck.deal - (i / (N - 1)) * (1 - winD)) / winD));
     const g = gridState[i];
-    let x = lerp(fx, g.x, t);
-    let y = lerp(fy, g.y, t) - Math.sin(t * Math.PI) * 90;
-    let rot = lerp(a, 0, t) + Math.sin(t * Math.PI) * (i % 2 ? 7 : -7);
-    let s = lerp(fanS, g.s, t);
+
+    // deal: cascade along a curve that dips to the lower-left before rising into the slot
+    const cx = Math.min(fx, g.x) - W * 0.22, cy = Math.max(fy, g.y) + H * 0.55;
+    const u = 1 - t;
+    let x = u * u * fx + 2 * u * t * cx + t * t * g.x;
+    let y = u * u * fy + 2 * u * t * cy + t * t * g.y;
+    let rot = lerp(a, 0, t) - Math.sin(t * Math.PI) * 42;
+    let s = lerp(fanS * (1 + hv * 0.05), g.s, t);
     let o = lerp(1, g.o, t);
-    const hv = hoverState[i].v * (t > 0.99 ? 1 : 0);
-    y -= hv * 22; s *= 1 + hv * 0.04;
-    const sh = easeIO(clamp01((deck.shrink - (i / (N - 1)) * (1 - winS)) / winS));
-    if (sh > 0) {
-      x = lerp(x, stageW - 62 - i * 0.4, sh);
-      y = lerp(y, stageH - 72 - i * 0.6, sh);
-      s = lerp(s, 0.26, sh);
-      rot = lerp(rot, ((i % 3) - 1) * 6, sh);
+
+    // grid hover lift
+    const gh = hv * t;
+    y -= gh * 20; s *= 1 + gh * 0.045;
+
+    // exit: compact toward the corner, then pile into a stack
+    if (compact > 0) {
+      x = lerp(x, ax + (x - ax) * 0.5, compact);
+      y = lerp(y, ay + (y - ay) * 0.5, compact);
+      s = lerp(s, s * 0.72, compact);
     }
-    el.style.transform = `translate3d(${x - BASE_W / 2}px, ${y - BASE_H / 2}px, 0) rotate(${rot}deg) scale(${s})`;
+    const ps = easeIO(clamp01((pileP - (i / (N - 1)) * 0.5) / 0.5));
+    if (ps > 0) {
+      x = lerp(x, W - 62 - i * 0.4, ps);
+      y = lerp(y, H - 72 - i * 0.6, ps);
+      s = lerp(s, 0.26, ps);
+      rot = lerp(rot, ((i % 3) - 1) * 6, ps);
+    }
+    el.style.transform = `translate3d(${(x - BASE_W / 2).toFixed(2)}px, ${(y - BASE_H / 2).toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(${s.toFixed(4)})`;
     el.style.opacity = o;
-    el.style.zIndex = t > 0.5 ? 100 + i : N - i;
-    el.style.pointerEvents = o < 0.3 || deck.shrink > 0.5 ? "none" : "";
+    el.style.zIndex = hv > 0.02 ? 300 : t > 0.5 ? 100 + i : N - i;
+    el.style.pointerEvents = o < 0.3 || deck.shrink > 0.3 ? "none" : "";
   });
-  // heading ghosts out as the cards land, gone when they shrink
-  $("#deckTitle").style.opacity = (1 - 0.88 * clamp01(deck.deal * 1.4)) * (1 - deck.shrink);
+  $("#deckTitle").style.opacity = (1 - 0.82 * clamp01(deck.deal * 1.4)) * (1 - compact);
   const ready = deck.deal > 0.97 && deck.shrink < 0.03;
   if (ready !== gridReady) {
     gridReady = ready;
     document.body.classList.toggle("grid-ready", ready);
     if (!ready) closeFilter();
-    if (!ready) hoverState.forEach((h) => (h.v = 0));
   }
+  canHover = deck.enter > 0.9 && deck.shrink < 0.02 && (deck.deal < 0.02 || deck.deal > 0.98);
+  if (!canHover) hoverState.forEach((h, k) => { if (h.v) { gsap.killTweensOf(h); h.v = 0; cardEls[k].classList.remove("is-hover"); } });
   document.body.classList.toggle("deck-mini", deck.shrink > 0.995);
 }
+let canHover = false;
+const FAN_STEP = 13;
 
 function measureStage() {
   stageW = deckStage.clientWidth; stageH = deckStage.clientHeight;
@@ -452,33 +486,55 @@ function buildDeckDesktop() {
     defaults: { ease: "none" },
     onUpdate: renderDeck,
     scrollTrigger: {
-      trigger: "#deck", start: "top top", end: () => "+=" + innerHeight * 6.4, pin: true, scrub: 0.9,
+      trigger: "#deck", start: "top top", end: () => "+=" + innerHeight * 6.8, pin: true, scrub: 1.2,
       invalidateOnRefresh: true,
       onRefresh: () => { measureStage(); renderDeck(); },
     },
   });
-  deckTL.fromTo(deck, { enter: 0 }, { enter: 1, duration: 0.8, ease: "power2.out" }, 0)
-    .fromTo(deck, { sweep: 32 }, { sweep: 32 + 9.2 * 11.5, duration: 2.8 }, 0.1)
-    .to(deck, { deal: 1, duration: 1.4 })
+  deckTL.fromTo(deck, { enter: 0 }, { enter: 1, duration: 0.9, ease: "power3.out" }, 0)
+    .fromTo(deck, { sweep: 30 }, { sweep: 30 + 9.4 * FAN_STEP, duration: 3, ease: "power1.inOut" }, 0.1)
+    .to(deck, { deal: 1, duration: 1.6, ease: "power1.inOut" })
     .addLabel("grid")
     .to({}, { duration: 1.3 })
-    .to(deck, { shrink: 1, duration: 0.9 });
-  // heading words rise as the section arrives
+    .to(deck, { shrink: 1, duration: 1.2, ease: "power1.inOut" });
   gsap.fromTo(words("#deckTitle"), { yPercent: 115 }, {
-    yPercent: 0, stagger: 0.04, duration: 0.8, ease: "power3.out",
+    yPercent: 0, stagger: 0.04, duration: 0.9, ease: "power4.out",
     scrollTrigger: { trigger: "#deck", start: "top 70%", toggleActions: "play none none reverse" },
   });
   renderDeck();
 
-  // hover lift (only in grid state)
-  const onEnter = (e) => { const i = +e.currentTarget.dataset.i; if (gridReady) gsap.to(hoverState[i], { v: 1, duration: 0.35, ease: "power2.out", onUpdate: renderDeck }); };
-  const onLeave = (e) => { const i = +e.currentTarget.dataset.i; gsap.to(hoverState[i], { v: 0, duration: 0.4, ease: "power2.out", onUpdate: renderDeck }); };
-  cardEls.forEach((el) => { el.addEventListener("mouseenter", onEnter); el.addEventListener("mouseleave", onLeave); });
+  // smooth hover: rise out of the fan / lift in the grid, foil + tilt follow the pointer
+  const onEnter = (e) => {
+    const el = e.currentTarget, i = +el.dataset.i;
+    if (!canHover) return;
+    el.classList.add("is-hover");
+    gsap.to(hoverState[i], { v: 1, duration: 0.6, ease: "power3.out", overwrite: true, onUpdate: renderDeck });
+  };
+  const onLeave = (e) => {
+    const el = e.currentTarget, i = +el.dataset.i;
+    el.classList.remove("is-hover");
+    el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg");
+    gsap.to(hoverState[i], { v: 0, duration: 0.7, ease: "power3.out", overwrite: true, onUpdate: renderDeck });
+  };
+  const onMove = (e) => {
+    const el = e.currentTarget;
+    if (!el.classList.contains("is-hover")) return;
+    const r = el.getBoundingClientRect();
+    const mx = (e.clientX - r.left) / r.width, my = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--mx", (mx * 100).toFixed(1) + "%");
+    el.style.setProperty("--my", (my * 100).toFixed(1) + "%");
+    el.style.setProperty("--ry", ((mx - 0.5) * 14).toFixed(2) + "deg");
+    el.style.setProperty("--rx", ((0.5 - my) * 14).toFixed(2) + "deg");
+  };
+  cardEls.forEach((el) => {
+    el.addEventListener("pointerenter", onEnter); el.addEventListener("pointerleave", onLeave); el.addEventListener("pointermove", onMove);
+  });
 
   return () => {
     cardEls.forEach((el) => {
-      el.removeEventListener("mouseenter", onEnter); el.removeEventListener("mouseleave", onLeave);
+      el.removeEventListener("pointerenter", onEnter); el.removeEventListener("pointerleave", onLeave); el.removeEventListener("pointermove", onMove);
       el.style.transform = el.style.opacity = el.style.zIndex = el.style.pointerEvents = "";
+      el.classList.remove("is-hover");
     });
     document.body.classList.remove("grid-ready", "deck-mini");
     $("#deckTitle").style.opacity = "";
@@ -585,14 +641,29 @@ $$('.acc a[href="#finale"]').forEach((a) => a.addEventListener("click", (e) => {
    4. FINALE — parallax floating cards, headline, glass panel
    ========================================================== */
 function buildFinale() {
-  $$(".float-card").forEach((el) => {
-    gsap.fromTo(el, { y: 240 * el.dataset.speed }, { y: -240 * el.dataset.speed, ease: "none",
-      scrollTrigger: { trigger: "#finale", start: "top bottom", end: "bottom top", scrub: true } });
+  // the studios section dims as the dark finale approaches
+  gsap.fromTo(".studios-dusk", { opacity: 0 }, { opacity: 1, ease: "none",
+    scrollTrigger: { trigger: "#studios", start: "bottom 95%", end: "bottom top", scrub: true } });
+
+  // cards burst out of the corner deck and scatter across the finale
+  const fin = $("#finale");
+  $$(".float-card").forEach((el, k) => {
+    const fly = $(".fc-fly", el);
+    const offX = () => innerWidth - 62 - (el.offsetLeft + el.offsetWidth / 2);
+    const offY = () => innerHeight - 72 - (el.offsetTop + el.parentElement.offsetTop + el.offsetHeight / 2);
+    gsap.fromTo(fly,
+      { x: offX, y: offY, scale: 0.3, rotation: () => gsap.utils.random(-30, 30), opacity: 0 },
+      { x: 0, y: 0, scale: 1, rotation: 0, opacity: 1, ease: "power2.out",
+        scrollTrigger: { trigger: fin, start: () => `top ${55 + (k % 6) * 6}%`, end: "top top", scrub: 1.2, invalidateOnRefresh: true } });
+    gsap.fromTo(el, { y: 0 }, { y: -260 * el.dataset.speed, ease: "none",
+      scrollTrigger: { trigger: fin, start: "top top", end: "bottom top", scrub: true } });
   });
-  gsap.fromTo(words(".finale-title"), { yPercent: 115 }, { yPercent: 0, stagger: 0.06, duration: 1, ease: "power4.out",
-    scrollTrigger: { trigger: "#finale", start: "top 55%" } });
-  gsap.from("#bookPanel", { x: 80, opacity: 0, duration: 1.1, ease: "power3.out", scrollTrigger: { trigger: "#finale", start: "top 50%" } });
-  gsap.from("#bookPanel > *", { y: 20, opacity: 0, duration: 0.7, stagger: 0.07, delay: 0.25, ease: "power3.out", scrollTrigger: { trigger: "#finale", start: "top 50%" } });
+  ScrollTrigger.create({ trigger: fin, start: "top 60%", onToggle: (s) => document.body.classList.toggle("deck-scatter", s.isActive) });
+
+  gsap.fromTo(words(".finale-title"), { yPercent: 115 }, { yPercent: 0, stagger: 0.06, duration: 1.1, ease: "power4.out",
+    scrollTrigger: { trigger: fin, start: "top 45%" } });
+  gsap.from("#bookPanel", { y: 60, opacity: 0, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: fin, start: "top 40%" } });
+  gsap.from("#bookPanel > *", { y: 20, opacity: 0, duration: 0.8, stagger: 0.07, delay: 0.25, ease: "power3.out", scrollTrigger: { trigger: fin, start: "top 40%" } });
 }
 
 /* ==========================================================
