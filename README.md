@@ -26,6 +26,25 @@ The site currently uses no photos. To add Drift's own photos, put them in `image
 - to a tile in the `TILES` list (intro mosaic), or
 - to a card in the `CARDS` list (it appears in that card's story panel).
 
+## Editing the content
+Everything you'd normally change is near the top of `script.js`:
+
+| What | Where |
+|---|---|
+| Phone numbers, map link, Instagram | `PHONE_RAJ`, `PHONE_NEG`, `MAPS`, `IG` |
+| Service cards (title, tag, colours, story text, steps) | `CARDS` |
+| Intro mosaic tiles | `TILES` |
+| Studios accordion | `ACC` |
+| Opening hours (open/closed badge) | `isOpenNow()` |
+| Text in the hero, intro story and finale | `index.html` |
+
+The card filter groups are set by each card's `cat` (`services`, `groom`, `locations`, `visit`).
+
+## Tuning the scroll speed
+- Intro length: `INTRO_VH_PER_UNIT` and the durations in `buildIntro()`.
+- Card fan / grid / studios length: the timeline in `buildDeckDesktop()`. The pin length is `deckTL.duration() × 0.6` screens.
+- Smooth-scroll feel: `lerp` in `new Lenis({...})`. Lower is smoother and slower.
+
 ## Run locally
 ```bash
 python -m http.server 8000
@@ -35,3 +54,6 @@ Then open http://localhost:8000. You can also use the VS Code **Live Server** ex
 ## Deploy (GitHub Pages)
 Go to Settings → Pages → Deploy from branch → `main` / root.
 For the custom domain, add a `CNAME` file containing `driftbarber.lk` and point the domain's DNS at GitHub Pages.
+
+## History
+See [CHANGELOG.md](CHANGELOG.md) for every step of the build.
