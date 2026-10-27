@@ -287,7 +287,7 @@ setInterval(paintOpenStatus, 60000);
 /* ==========================================================
    SMOOTH SCROLL (Lenis) + progress + nav theme
    ========================================================== */
-const lenis = new Lenis({ lerp: REDUCED ? 1 : 0.065, smoothWheel: !REDUCED });
+const lenis = new Lenis({ lerp: REDUCED ? 1 : 0.08, smoothWheel: !REDUCED });
 lenis.on("scroll", ScrollTrigger.update);
 gsap.ticker.add((t) => { lenis.raf(t * 1000); if (dLenis) dLenis.raf(t * 1000); });
 gsap.ticker.lagSmoothing(0);
@@ -321,7 +321,7 @@ gsap.timeline({ delay: 0.15 })
   .from(".nav-right > *, .nav-links", { y: -16, opacity: 0, duration: 0.7, stagger: 0.06, ease: "power3.out" }, "-=0.8");
 
 /* ==========================================================
-   3D SCENE — rotating barber pole + floating Drift cards (Three.js)
+   3D SCENE — snipping barber scissors + floating Drift cards (Three.js)
    ========================================================== */
 const POLE = { reveal: 0 };
 function buildPole3D() {
@@ -352,37 +352,65 @@ function buildPole3D() {
   panel(0xffffff, 0, 0, 12, 10, 4, Math.PI);
   scene.environment = pmrem.fromScene(env, 0.04).texture;
 
-  // barber-pole stripes (seamless diagonal bands)
-  const S = 256, tc = document.createElement("canvas"); tc.width = tc.height = S;
-  const ctx = tc.getContext("2d"), img = ctx.createImageData(S, S);
-  const bands = [[239, 90, 67], [248, 245, 240], [43, 58, 143], [248, 245, 240]];
-  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
-    const c = bands[Math.floor(((x + y) % S) / (S / 4))], o = (y * S + x) * 4;
-    img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2]; img.data[o + 3] = 255;
-  }
-  ctx.putImageData(img, 0, 0);
-  const stripes = new THREE.CanvasTexture(tc);
-  stripes.wrapS = stripes.wrapT = THREE.RepeatWrapping;
-  stripes.repeat.set(2, 2.6);
-  stripes.encoding = THREE.sRGBEncoding;
-  stripes.anisotropy = 8;
+  // ---------- 3D barber scissors ----------
+  const chromeBlade = new THREE.MeshStandardMaterial({ color: 0xeef0f6, metalness: 1, roughness: 0.14, envMapIntensity: 1.6 });
+  const handleMat = new THREE.MeshPhysicalMaterial({ color: 0xc9321f, metalness: 0.45, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.3 });
+  const goldMat = new THREE.MeshStandardMaterial({ color: 0xf4c27a, metalness: 1, roughness: 0.2, envMapIntensity: 1.5 });
+  const extr = { depth: 0.07, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025, bevelSegments: 3, curveSegments: 32 };
 
-  const pole = new THREE.Group();
-  const chrome = new THREE.MeshStandardMaterial({ color: 0xf2f2f6, metalness: 1, roughness: 0.18, envMapIntensity: 1.4 });
-  const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 4.2, 96, 1, true),
-    new THREE.MeshStandardMaterial({ map: stripes, roughness: 0.35, metalness: 0.05 }));
-  const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 4.3, 96, 1, true),
-    new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.2, roughness: 0.04, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 2.2, side: THREE.DoubleSide, depthWrite: false }));
-  const capTop = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.32, 96), chrome); capTop.position.y = 2.3;
-  const ringTop = new THREE.Mesh(new THREE.TorusGeometry(0.92, 0.06, 24, 96), chrome); ringTop.rotation.x = Math.PI / 2; ringTop.position.y = 2.12;
-  const dome = new THREE.Mesh(new THREE.SphereGeometry(0.82, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2), chrome); dome.position.y = 2.46;
-  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.16, 32, 16), chrome); knob.position.y = 3.3;
-  const capBot = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.32, 96), chrome); capBot.position.y = -2.3;
-  const ringBot = ringTop.clone(); ringBot.position.y = -2.12;
-  const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.82, 0.12, 0.8, 64), chrome); cone.position.y = -2.86;
-  pole.add(inner, glass, capTop, ringTop, dome, knob, capBot, ringBot, cone);
-  pole.rotation.z = -0.1;
+  function makeHalf(flip) {
+    const g = new THREE.Group();
+    // blade: straight cutting edge on y=0, curved spine, sharp tip
+    const sh = new THREE.Shape();
+    sh.moveTo(-0.35, 0);
+    sh.lineTo(-0.35, 0.24);
+    sh.quadraticCurveTo(1.2, 0.34, 3.4, 0.02);
+    sh.lineTo(3.45, 0);
+    sh.lineTo(-0.35, 0);
+    const blade = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, extr), chromeBlade);
+    // shank sweeping down to the finger ring
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.25, 0.12, 0.035), new THREE.Vector3(-0.7, -0.05, 0.035),
+      new THREE.Vector3(-1.1, -0.32, 0.035), new THREE.Vector3(-1.38, -0.5, 0.035),
+    ]);
+    const shank = new THREE.Mesh(new THREE.TubeGeometry(curve, 48, 0.09, 20, false), handleMat);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.095, 28, 80), handleMat);
+    ring.position.set(-1.78, -0.68, 0.035);
+    ring.scale.set(1.15, 0.92, 1);
+    // finger rest (tang) on one half, like real barber shears
+    const parts = [blade, shank, ring];
+    if (!flip) {
+      const tang = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-2.1, -1.0, 0.035), new THREE.Vector3(-2.45, -1.25, 0.035), new THREE.Vector3(-2.75, -1.18, 0.035)]), 24, 0.06, 12, false), handleMat);
+      parts.push(tang);
+    }
+    g.add(...parts);
+    if (flip) { g.scale.y = -1; g.position.z = -0.12; }
+    return g;
+  }
+  const halfA = makeHalf(false), halfB = makeHalf(true);
+  const screw = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.32, 32), goldMat);
+  screw.rotation.x = Math.PI / 2; screw.position.z = -0.02;
+  const screwHead = new THREE.Mesh(new THREE.SphereGeometry(0.15, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), goldMat);
+  screwHead.rotation.x = Math.PI / 2; screwHead.position.z = 0.13;
+  const scissors = new THREE.Group();
+  scissors.add(halfA, halfB, screw, screwHead);
+  const pole = new THREE.Group(); // wrapper used for placement / parallax
+  pole.add(scissors);
+  scissors.rotation.z = 0.5;
   scene.add(pole);
+
+  // hair clippings drifting down
+  const NH = 70, hpos = new Float32Array(NH * 6), hvel = [];
+  for (let k = 0; k < NH; k++) {
+    const x = (Math.random() - 0.5) * 7, y = Math.random() * 8 - 4, z = (Math.random() - 0.5) * 4;
+    const a = Math.random() * Math.PI, l = 0.08 + Math.random() * 0.16;
+    hpos.set([x, y, z, x + Math.cos(a) * l, y + Math.sin(a) * l, z], k * 6);
+    hvel.push(0.25 + Math.random() * 0.4);
+  }
+  const hg = new THREE.BufferGeometry(); hg.setAttribute("position", new THREE.BufferAttribute(hpos, 3));
+  const hair = new THREE.LineSegments(hg, new THREE.LineBasicMaterial({ color: 0x3a2a22, transparent: true, opacity: 0.8 }));
+  scene.add(hair);
 
   // floating 3D Drift cards orbiting the pole
   const cardTex = (c) => {
@@ -403,12 +431,12 @@ function buildPole3D() {
   const floaters = [0, 1, 2, 6, 13].map((ci, k) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.63),
       new THREE.MeshBasicMaterial({ map: cardTex(CARDS[ci]), transparent: true, side: THREE.DoubleSide, toneMapped: false }));
-    m.userData = { r: 2.3 + (k % 2) * 0.55, a: (k / 5) * Math.PI * 2, y: -1.4 + k * 0.7, sp: 0.18 + (k % 3) * 0.05, bob: k * 1.3 };
+    m.userData = { r: 1.9 + (k % 2) * 0.45, a: (k / 5) * Math.PI * 2, y: -1.4 + k * 0.7, sp: 0.18 + (k % 3) * 0.05, bob: k * 1.3 };
     scene.add(m); return m;
   });
 
   // dust particles
-  const N_P = 320, pos = new Float32Array(N_P * 3);
+  const N_P = 260, pos = new Float32Array(N_P * 3);
   for (let k = 0; k < N_P; k++) { pos[k * 3] = (Math.random() - 0.5) * 16; pos[k * 3 + 1] = (Math.random() - 0.5) * 9; pos[k * 3 + 2] = (Math.random() - 0.5) * 8; }
   const pg = new THREE.BufferGeometry(); pg.setAttribute("position", new THREE.BufferAttribute(pos, 3));
   const dust = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0xffd9a8, size: 0.035, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending }));
@@ -436,13 +464,29 @@ function buildPole3D() {
     const R = POLE.reveal;
     ptr.x += (ptr.tx - ptr.x) * 0.05; ptr.y += (ptr.ty - ptr.y) * 0.05;
 
-    stripes.offset.y -= dt * 0.22; // the classic spiralling stripes
-    pole.position.set(wide ? 2.9 * Math.min(1.4, camera.aspect / 1.6) : 0, wide ? -0.1 : 1.2, 0);
-    pole.rotation.y += dt * 0.35;
-    pole.rotation.x = ptr.y * 0.25;
-    pole.rotation.z = -0.1 + ptr.x * -0.15 + (1 - R) * 0.6;
-    const sc = (wide ? 1 : 0.8) * (0.6 + 0.4 * R);
+    // snip: quick close, slower open
+    const tt = now / 1000;
+    const cyc = (tt * 0.55) % 1;
+    const open = cyc < 0.25 ? 1 - Math.pow(cyc / 0.25, 2) : Math.pow((cyc - 0.25) / 0.75, 0.7);
+    const ang = 0.03 + open * 0.34 * R;
+    halfA.rotation.z = ang; halfB.rotation.z = -ang;
+    pole.position.set(wide ? 3.3 * Math.min(1.4, camera.aspect / 1.6) : 0, wide ? 0 : 1.3, 0);
+    scissors.rotation.y = Math.sin(tt * 0.5) * 0.5 + ptr.x * 0.6 + (1 - R) * 2.5;
+    scissors.rotation.x = -0.35 + ptr.y * 0.4 + Math.sin(tt * 0.7) * 0.08;
+    scissors.rotation.z = 0.55 + Math.sin(tt * 0.4) * 0.08;
+    scissors.position.y = Math.sin(tt * 0.9) * 0.12;
+    const sc = (wide ? 1.05 : 0.75) * (0.55 + 0.45 * R);
     pole.scale.setScalar(sc);
+    // falling clippings
+    const hp = hg.attributes.position.array;
+    for (let k = 0; k < NH; k++) {
+      const d = hvel[k] * dt; hp[k * 6 + 1] -= d; hp[k * 6 + 4] -= d;
+      hp[k * 6] += Math.sin(tt + k) * 0.002; hp[k * 6 + 3] += Math.sin(tt + k) * 0.002;
+      if (hp[k * 6 + 1] < -4.5) { hp[k * 6 + 1] += 9; hp[k * 6 + 4] += 9; }
+    }
+    hg.attributes.position.needsUpdate = true;
+    hair.position.x = pole.position.x;
+    hair.material.opacity = 0.8 * R;
     floaters.forEach((m) => {
       const u = m.userData; u.a += dt * u.sp;
       m.position.set(pole.position.x + Math.cos(u.a) * u.r * sc, u.y * sc + Math.sin(now / 1000 + u.bob) * 0.15, Math.sin(u.a) * u.r * sc);
@@ -470,7 +514,7 @@ function buildIntro() {
 
   const tl = gsap.timeline({
     defaults: { ease: "none" },
-    scrollTrigger: { trigger: "#intro", start: "top top", end: () => "+=" + innerHeight * 7.5, pin: true, scrub: 1.6, invalidateOnRefresh: true },
+    scrollTrigger: { trigger: "#intro", start: "top top", end: () => "+=" + innerHeight * 4.6, pin: true, scrub: 1.1, invalidateOnRefresh: true },
   });
   tl.fromTo(tiles,
       { y: (i, el) => innerHeight * (0.85 + parseFloat(el.dataset.depth) * 1.0), scale: 0.9, rotation: (i) => (i % 2 ? 4 : -4) },
@@ -479,11 +523,11 @@ function buildIntro() {
     .to("#hero", { opacity: 0, y: -50, scale: 0.94, duration: 0.6 }, 1.0)
     .fromTo("#centerTile", { opacity: 0, scale: 0.86, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "power2.out" }, 1.15)
     .fromTo(words(".ct-line1"), { yPercent: 115 }, { yPercent: 0, stagger: 0.04, duration: 0.45, ease: "power2.out" }, 1.4)
-    .to({}, { duration: 1 })
+    .to({}, { duration: 0.5 })
     .to(words(".ct-line1"), { yPercent: -115, stagger: 0.03, duration: 0.4, ease: "power2.in" })
     .fromTo(words(".ct-line2"), { yPercent: 115 }, { yPercent: 0, stagger: 0.04, duration: 0.45, ease: "power2.out" }, "<0.2")
     .to(".mosaic-dim", { opacity: 0.55, duration: 0.6 }, "<")
-    .to({}, { duration: 1 })
+    .to({}, { duration: 0.5 })
     .addLabel("expand")
     .to(".ct-light", { opacity: 0, duration: 0.3 }, "expand")
     .to("#centerTile", { left: 0, top: 0, width: "100%", height: "100%", borderRadius: 0, duration: 1.6, ease: "power2.inOut" }, "expand")
@@ -493,7 +537,7 @@ function buildIntro() {
     .fromTo(words(".ct-final"), { yPercent: 115 }, { yPercent: 0, stagger: 0.07, duration: 0.8, ease: "power3.out" }, "expand+=1.25")
     .fromTo(".ct-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, "expand+=1.8")
     .to(POLE, { reveal: 1, duration: 1.6, ease: "power2.out" }, "expand+=0.6")
-    .to({}, { duration: 1.4 });
+    .to({}, { duration: 0.6 });
   return tl;
 }
 
@@ -628,26 +672,26 @@ function buildDeckDesktop() {
     defaults: { ease: "none" },
     onUpdate: renderDeck,
     scrollTrigger: {
-      trigger: "#deck", start: "top top", end: () => "+=" + innerHeight * 12, pin: true, scrub: 1.6,
+      trigger: "#deck", start: "top top", end: () => "+=" + innerHeight * 7.2, pin: true, scrub: 1.1,
       invalidateOnRefresh: true,
       onRefresh: () => { measureStage(); renderDeck(); },
     },
   });
   gsap.set("#studios", { visibility: "visible", yPercent: 100 });
-  deckTL.fromTo(deck, { enter: 0 }, { enter: 1, duration: 1.4, ease: "power3.out" }, 0)
-    .fromTo(deck, { sweep: 30 }, { sweep: 30 + 9.4 * FAN_STEP, duration: 4.4, ease: "power1.inOut" }, 0.1)
-    .to(deck, { deal: 1, duration: 2.6, ease: "power1.inOut" })
+  deckTL.fromTo(deck, { enter: 0 }, { enter: 1, duration: 1, ease: "power3.out" }, 0)
+    .fromTo(deck, { sweep: 30 }, { sweep: 30 + 9.4 * FAN_STEP, duration: 3.2, ease: "power1.inOut" }, 0.1)
+    .to(deck, { deal: 1, duration: 2, ease: "power1.inOut" })
     .addLabel("grid")
-    .to({}, { duration: 1.8 })
+    .to({}, { duration: 1 })
     .addLabel("exit")
     // the grid squeezes toward the corner while the studios slide up underneath
     .to(deck, { shrink: 0.45, duration: 2, ease: "power1.inOut" }, "exit")
     .fromTo("#studios", { yPercent: 100 }, { yPercent: 0, duration: 2.2, ease: "power2.out" }, "exit+=0.6")
     .fromTo(".studios-title", { color: "#b9bdd0" }, { color: "#141833", duration: 1.4 }, "exit+=1.8")
     .fromTo(".acc-item", { y: 80 }, { y: 0, duration: 1.8, stagger: 0.12, ease: "power2.out" }, "exit+=0.9")
-    .to(deck, { shrink: 1, duration: 2, ease: "power1.inOut" })
+    .to(deck, { shrink: 1, duration: 1.6, ease: "power1.inOut" })
     .addLabel("studios")
-    .to({}, { duration: 1.8 });
+    .to({}, { duration: 0.9 });
   gsap.fromTo(words("#deckTitle"), { yPercent: 115 }, {
     yPercent: 0, stagger: 0.04, duration: 0.9, ease: "power4.out",
     scrollTrigger: { trigger: "#deck", start: "top 70%", toggleActions: "play none none reverse" },
@@ -721,12 +765,12 @@ function labelScrollY(label, extra = 0) {
   return null;
 }
 function gridScrollY() {
-  return labelScrollY("grid", 0.6) ?? $("#deck").getBoundingClientRect().top + scrollY - 10;
+  return labelScrollY("grid", 0.4) ?? $("#deck").getBoundingClientRect().top + scrollY - 10;
 }
 function goTo(target) {
   const y = target === "grid" ? gridScrollY()
     : target === "top" ? 0
-    : target === "studios" ? (labelScrollY("studios", 0.6) ?? $("#studios").getBoundingClientRect().top + scrollY)
+    : target === "studios" ? (labelScrollY("studios", 0.4) ?? $("#studios").getBoundingClientRect().top + scrollY)
     : target === "finale" ? $("#finale").getBoundingClientRect().top + scrollY
     : target;
   lenis.scrollTo(y, { duration: 1.8, easing: (t) => 1 - Math.pow(1 - t, 4) });
