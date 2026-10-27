@@ -5,151 +5,235 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Drift Barber | Rajagiriya & Negombo</title>
   <meta name="description" content="Drift Barber — Your Hair, Your Beauty, Our Craft. Barber & beauty salon in Rajagiriya and Negombo, open 9am – 10.30pm daily." />
-  <meta name="theme-color" content="#14161c" />
+  <meta name="theme-color" content="#151833" />
   <meta property="og:title" content="Drift Barber | Rajagiriya & Negombo" />
   <meta property="og:description" content="Your Hair, Your Beauty, Our Craft. Open 9am – 10.30pm." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://driftbarber.lk/" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314161c'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='16' text-anchor='middle' fill='%23f4b860'%3ED%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23151833'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='16' text-anchor='middle' fill='%23ef5a43'%3ED%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="vendor/lenis.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- scroll progress -->
   <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 
-  <!-- NAV BAR -->
+  <!-- ================= NAV BAR ================= -->
   <header class="nav" id="nav">
-    <a class="brand" href="#top" aria-label="Drift Barber home">
+    <a class="brand" href="#intro" data-goto="top" aria-label="Drift Barber home">
       <span class="brand-mark">Drift</span><span class="brand-word">Barber</span>
     </a>
 
-    <nav class="nav-links" id="navLinks" aria-label="Main">
-      <a href="#showcase" data-filter="all">Showcase</a>
-      <a href="#showcase" data-filter="services">Services</a>
-      <a href="#showcase" data-filter="locations">Locations</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#deck" data-goto="grid">Services</a>
+      <a href="#studios" data-goto="studios">Studios</a>
+      <a href="#finale" data-goto="finale">Book a chair</a>
     </nav>
 
-    <div class="nav-actions">
-      <a class="nav-ig" href="https://www.instagram.com/driftbarber.lk/" target="_blank" rel="noopener" aria-label="Instagram">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+    <div class="nav-right">
+      <!-- "I want to …" filter (appears when the card grid is on screen) -->
+      <div class="filter" id="filter">
+        <span class="filter-label">I want to</span>
+        <button class="filter-btn" id="filterBtn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="filterText">explore everything</span>
+          <span class="filter-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
+          </span>
+        </button>
+        <ul class="filter-menu" id="filterMenu" role="listbox">
+          <li role="option" data-filter="all" aria-selected="true">explore everything</li>
+          <li role="option" data-filter="services">get a fresh cut</li>
+          <li role="option" data-filter="groom">sort my beard &amp; skin</li>
+          <li role="option" data-filter="locations">find a studio</li>
+          <li role="option" data-filter="visit">plan my visit</li>
+        </ul>
+      </div>
+
+      <a class="nav-ig" href="https://www.instagram.com/driftbarber.lk/" target="_blank" rel="noopener" aria-label="Drift Barber on Instagram">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
       </a>
-      <a class="btn btn-dark" href="#contact">Book now</a>
-      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
 
-  <main id="top">
-    <!-- INTRO -->
-    <section class="intro">
-      <p class="eyebrow">Barber &amp; Beauty Salon · Rajagiriya · Negombo</p>
-      <h1>Your Hair, Your Beauty,<br /><em>Our Craft.</em></h1>
-      <div class="intro-row">
-        <div class="stats">
-          <div><strong>43.4K</strong><span>Instagram followers</span></div>
-          <div><strong>2,400+</strong><span>Looks shared</span></div>
-          <div><strong>2</strong><span>Studios</span></div>
+  <main>
+    <!-- ================= 1. INTRO (hero → mosaic → full-screen) ================= -->
+    <section class="intro" id="intro" data-theme="dark">
+      <div class="intro-bg" aria-hidden="true">
+        <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+      </div>
+
+      <div class="mosaic" id="mosaic">
+        <!-- tiles are rendered by script.js -->
+        <div class="mosaic-dim" aria-hidden="true"></div>
+
+        <div class="center-tile" id="centerTile">
+          <div class="ct-light">
+            <p class="ct-line ct-line1" data-split>A great cut changes your whole day.</p>
+            <p class="ct-line ct-line2" data-split>But the right barber is rarely in the <em>cards</em>.</p>
+          </div>
+          <div class="ct-dark" aria-hidden="true">
+            <span class="ct-glow g1"></span><span class="ct-glow g2"></span>
+            <span class="ct-art" id="ctArt"></span>
+            <p class="ct-final" data-split>Until you take a seat at <em>Drift</em>…</p>
+          </div>
         </div>
-        <div class="filter" id="filter">
-          <span class="filter-label">I want to</span>
-          <button class="filter-btn" id="filterBtn" aria-haspopup="listbox" aria-expanded="false">
-            <span id="filterText">explore everything</span>
-            <span class="filter-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
-            </span>
-          </button>
-          <ul class="filter-menu" id="filterMenu" role="listbox">
-            <li role="option" data-filter="all" aria-selected="true">explore everything</li>
-            <li role="option" data-filter="services">get a fresh cut</li>
-            <li role="option" data-filter="groom">sort my beard &amp; skin</li>
-            <li role="option" data-filter="locations">find a studio</li>
-            <li role="option" data-filter="visit">plan my visit</li>
-          </ul>
+      </div>
+
+      <div class="hero" id="hero">
+        <h1 class="hero-logo" aria-label="Drift Barber">
+          <span class="hl-mark"><span>D</span><span>r</span><span>i</span><span>f</span><span>t</span></span><span class="hl-word"><span>B</span><span>a</span><span>r</span><span>b</span><span>e</span><span>r</span></span>
+        </h1>
+        <p class="hero-sub">Your Hair, Your Beauty, Our Craft.</p>
+        <div class="hero-cue">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+          <span>Scroll to explore</span>
         </div>
+      </div>
+
+      <div class="hero-corners">
+        <span class="hc-left">Rajagiriya · Negombo</span>
+        <span class="hc-right">Open daily, 9am – 10.30pm</span>
       </div>
     </section>
 
-    <!-- SHOWCASE GRID -->
-    <section class="showcase" id="showcase" aria-label="Drift Barber showcase">
-      <div class="grid" id="grid"><!-- cards rendered by script.js --></div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="about" id="about">
-      <div class="about-card">
-        <p class="eyebrow">About Drift</p>
-        <h2>Crafted cuts, every day,<br />from morning till late.</h2>
-        <p>Drift Barber is a barber and beauty studio with two homes — Rajagiriya and Negombo. We keep long hours so a sharp look fits around your day, not the other way round. Walk in, sit back and leave looking like the best version of you.</p>
-        <a class="btn btn-light" href="https://www.instagram.com/driftbarber.lk/" target="_blank" rel="noopener">See our work on Instagram →</a>
+    <!-- ================= 2. DECK (fan → grid → mini deck) ================= -->
+    <section class="deck" id="deck" data-theme="light">
+      <div class="deck-stage" id="deckStage">
+        <h2 class="deck-title" id="deckTitle" data-split>Pick your card. We’ll handle the craft.</h2>
+        <div class="deck-cards" id="deckCards"><!-- cards rendered by script.js --></div>
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section class="contact" id="contact">
-      <p class="eyebrow">Book a chair</p>
-      <h2>Call the studio nearest to you.</h2>
-      <div class="contact-grid">
-        <a class="contact-tile" href="tel:+94741317373">
-          <span class="tile-tag">Rajagiriya</span>
-          <span class="tile-num">074 131 7373</span>
-          <span class="tile-cta">Tap to call →</span>
-        </a>
-        <a class="contact-tile" href="tel:+94766777373">
-          <span class="tile-tag">Negombo</span>
-          <span class="tile-num">076 677 7373</span>
-          <span class="tile-cta">Tap to call →</span>
-        </a>
-        <a class="contact-tile" href="https://maps.app.goo.gl/58YBZ3KYdZ7eMMZD6" target="_blank" rel="noopener">
-          <span class="tile-tag">Directions</span>
-          <span class="tile-num">Open in Maps</span>
-          <span class="tile-cta">Get directions →</span>
-        </a>
-        <div class="contact-tile static">
-          <span class="tile-tag">Open daily</span>
-          <span class="tile-num">9am – 10.30pm</span>
-          <span class="tile-cta" id="openNow">&nbsp;</span>
+    <!-- ================= 3. STUDIOS (accordion) ================= -->
+    <section class="studios" id="studios" data-theme="light">
+      <h2 class="studios-title">Two studios.<br />One craft.</h2>
+      <div class="acc" id="acc"><!-- rendered by script.js --></div>
+    </section>
+
+    <!-- ================= 4. FINALE (book) ================= -->
+    <section class="finale" id="finale" data-theme="dark">
+      <div class="finale-floats" id="finaleFloats" aria-hidden="true"></div>
+      <div class="finale-inner">
+        <h2 class="finale-title" data-split>Ready for a fresh cut?</h2>
+        <div class="book-panel" id="bookPanel">
+          <p class="bp-eyebrow">Book your chair</p>
+          <a class="bp-row" href="tel:+94741317373">
+            <span><small>Rajagiriya</small><strong>074 131 7373</strong></span>
+            <span class="bp-call">Call</span>
+          </a>
+          <a class="bp-row" href="tel:+94766777373">
+            <span><small>Negombo</small><strong>076 677 7373</strong></span>
+            <span class="bp-call">Call</span>
+          </a>
+          <div class="bp-meta">
+            <span><small>Hours</small><strong>9am – 10.30pm daily</strong></span>
+            <span class="open-badge" data-open-status>&nbsp;</span>
+          </div>
+          <div class="bp-actions">
+            <a class="btn btn-red" href="https://maps.app.goo.gl/58YBZ3KYdZ7eMMZD6" target="_blank" rel="noopener">Get directions</a>
+            <a class="btn btn-glass" href="https://www.instagram.com/driftbarber.lk/" target="_blank" rel="noopener">@driftbarber.lk</a>
+          </div>
         </div>
       </div>
+      <footer class="footer">
+        <span>© <span id="year"></span> Drift Barber · driftbarber.lk</span>
+        <a href="https://www.instagram.com/driftbarber.lk/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://maps.app.goo.gl/58YBZ3KYdZ7eMMZD6" target="_blank" rel="noopener">Maps</a>
+      </footer>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="brand small"><span class="brand-mark">Drift</span><span class="brand-word">Barber</span></div>
-    <p>© <span id="year"></span> Drift Barber · driftbarber.lk</p>
-    <a href="https://www.instagram.com/driftbarber.lk/" target="_blank" rel="noopener">@driftbarber.lk</a>
-  </footer>
+  <!-- mini deck (cards collapse here after the grid) -->
+  <button class="mini-deck" id="miniDeck" aria-label="Back to all services">
+    <span></span><span></span><span></span>
+  </button>
 
-  <!-- DETAIL OVERLAY (8am-style full-screen story) -->
-  <div class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="detailTitle" hidden>
-    <div class="detail-left" id="detailLeft">
-      <div class="detail-icon" id="detailIcon" aria-hidden="true"></div>
-      <div class="detail-head">
-        <span class="brand small"><span class="brand-mark">Drift</span><span class="brand-word">Barber</span></span>
-        <span class="detail-sep">|</span>
-        <span class="detail-cat" id="detailCat"></span>
+  <!-- ================= MENU (modal) ================= -->
+  <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+    <div class="menu-backdrop" data-close></div>
+    <div class="menu-box" id="menuBox">
+      <div class="menu-left">
+        <span class="brand big"><span class="brand-mark">Drift</span><span class="brand-word">Barber</span></span>
+        <div class="menu-left-foot">
+          <strong>Since day one</strong>
+          <span>Your Hair, Your Beauty,<br />Our Craft.</span>
+        </div>
       </div>
-      <h2 id="detailTitle"></h2>
-      <div class="detail-body">
-        <h3 id="detailTag"></h3>
-        <p id="detailText"></p>
-        <div class="detail-actions" id="detailActions"></div>
+      <div class="menu-right">
+        <p class="menu-eyebrow">I want to…</p>
+        <ul class="menu-list">
+          <li><a href="#deck" data-filter="all">Explore everything</a></li>
+          <li><a href="#deck" data-filter="services">Get a fresh cut</a></li>
+          <li><a href="#deck" data-filter="groom">Sort my beard &amp; skin</a></li>
+          <li><a href="#deck" data-filter="locations">Find a studio</a></li>
+          <li><a href="#deck" data-filter="visit">Plan my visit</a></li>
+        </ul>
+        <hr />
+        <ul class="menu-list small">
+          <li><a href="#studios" data-goto="studios">Our studios</a></li>
+          <li><a href="#finale" data-goto="finale">Book a chair</a></li>
+        </ul>
       </div>
-    </div>
-    <div class="detail-right" id="detailRight">
-      <ul class="detail-points" id="detailPoints"></ul>
-    </div>
-    <button class="detail-close" id="detailClose" aria-label="Close">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-    <div class="detail-nav">
-      <button id="detailPrev" aria-label="Previous">←</button>
-      <button id="detailNext" aria-label="Next">→</button>
+      <button class="menu-close" data-close aria-label="Close menu">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- ================= CARD STORY (horizontal panels) ================= -->
+  <div class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="dTitle" hidden>
+    <div class="d-track" id="dTrack">
+      <section class="d-panel d-intro" id="dIntro">
+        <span class="d-icon" id="dIcon" aria-hidden="true"></span>
+        <div class="d-head">
+          <span class="brand small"><span class="brand-mark">Drift</span><span class="brand-word">Barber</span></span>
+          <span class="d-sep">|</span><span class="d-cat" id="dCat"></span>
+        </div>
+        <h2 id="dTitle"></h2>
+        <div class="d-body">
+          <h3 id="dSub"></h3>
+          <p id="dText"></p>
+        </div>
+      </section>
+      <section class="d-panel d-visual" id="dVisual" aria-hidden="true">
+        <span class="dv-glow"></span>
+        <span class="dv-art" id="dArt"></span>
+        <span class="dv-label" id="dvLabel"></span>
+      </section>
+      <section class="d-panel d-points">
+        <p class="d-eyebrow">How it works</p>
+        <ol id="dPoints"></ol>
+      </section>
+      <section class="d-panel d-stat">
+        <strong id="dStat"></strong>
+        <span id="dStatSmall"></span>
+      </section>
+      <section class="d-panel d-cta">
+        <p class="d-eyebrow">Ready when you are</p>
+        <h3 id="dCtaTitle">Book your chair</h3>
+        <div class="d-actions" id="dActions"></div>
+        <button class="d-next" id="dNext">Next card <span>→</span></button>
+      </section>
+    </div>
+    <button class="d-close" id="dClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="d-cue" id="dCue">Scroll to learn more
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 7v3"/></svg>
+    </div>
+    <div class="d-progress"><span id="dProgress"></span></div>
+  </div>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="vendor/Flip.min.js"></script>
+  <script src="vendor/lenis.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
