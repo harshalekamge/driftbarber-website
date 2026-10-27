@@ -205,9 +205,6 @@ body.grid-ready .filter { opacity: 1; transform: none; pointer-events: auto; }
 .ct-glow { position: absolute; border-radius: 50%; filter: blur(70px); }
 .ct-glow.g1 { width: 50vw; height: 50vw; right: -10vw; top: -20vw; background: rgba(244,184,96,.35); animation: drift2 16s ease-in-out infinite alternate; }
 .ct-glow.g2 { width: 40vw; height: 40vw; left: 20vw; bottom: -25vw; background: rgba(239,90,67,.3); animation: drift1 20s ease-in-out infinite alternate; }
-.ct-art { position: absolute; right: 4vw; top: 50%; width: min(52vw, 640px); transform: translateY(-50%); color: rgba(255,255,255,.12); animation: spinSlow 60s linear infinite; }
-.ct-art svg { width: 100%; height: auto; fill: none; stroke: currentColor; stroke-width: .6; }
-@keyframes spinSlow { to { transform: translateY(-50%) rotate(360deg); } }
 .ct-3d { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .ct-copy { position: relative; z-index: 2; max-width: 620px; }
 .ct-kicker { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.55); margin-bottom: 22px; }
@@ -300,12 +297,14 @@ body.grid-ready .filter { opacity: 1; transform: none; pointer-events: auto; }
 body.deck-mini .deck-cards .card { visibility: hidden; }
 
 /* mobile / static grid version of the deck */
-.deck-stage.is-static { height: auto; overflow: visible; padding: calc(var(--nav-h) + 20px) 16px 90px; }
+.deck-stage.is-static { display: flex; flex-direction: column; height: auto; overflow: visible; padding: calc(var(--nav-h) + 20px) 16px 90px; }
 .deck-stage.is-static .deck-title { position: relative; top: auto; padding: 0 0 26px; }
 .deck-stage.is-static .deck-cards { position: relative; inset: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
 .deck-stage.is-static .card { position: relative; width: 100%; height: auto; aspect-ratio: 200 / 283; transform: none; }
 .deck-stage.is-static .card.hide { display: none; }
-.deck-stage.is-static .studios { position: relative; inset: auto; visibility: visible; transform: none !important; padding: 90px 0 40px; }
+.deck-stage.is-static .deck-title { order: 1; }
+.deck-stage.is-static .deck-cards { order: 2; }
+.deck-stage.is-static .studios { order: 3; position: relative; inset: auto; visibility: visible; transform: none !important; padding: 90px 0 40px; }
 .deck-stage.is-static .studios-title { color: var(--ink); }
 .deck-stage.is-static .studios-dusk { display: none; }
 
@@ -541,8 +540,32 @@ body.deck-mini .mini-deck { opacity: 1; transform: none; pointer-events: auto; }
   .d-cue { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .blob, .ct-art, .ct-glow, .fc-fly > span, .hero-cue svg { animation: none !important; }
+  .blob, .ct-grain, .ct-glow, .fc-fly > span, .hero-cue svg { animation: none !important; }
 }
 body.deck-scatter .mini-deck { opacity: 0; transform: scale(.4) translate(20px, 20px); pointer-events: none; }
 /* finale cards keep the glassy see-through look */
 .fc-fly > span { opacity: .82; }
+
+/* ==========================================================
+   PHOTO LAYERS (station photo, tinted)
+   ========================================================== */
+.tile-photo { position: absolute; inset: 0; background-repeat: no-repeat; filter: grayscale(1) contrast(1.15) brightness(1.05); mix-blend-mode: luminosity; opacity: .92; }
+.tile.has-photo::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.45)); }
+.tile.has-photo .tile-label { z-index: 2; }
+.tile.light .tile-label { color: var(--ink); }
+.dv-photo { position: absolute; inset: 0; background-image: url("images/station.jpg"); background-repeat: no-repeat; background-size: cover;
+  filter: grayscale(1) contrast(1.1); mix-blend-mode: luminosity; opacity: .75; transform: scale(1.06); }
+.d-visual .dv-art { color: rgba(255,255,255,.35); }
+.d-visual .dv-art svg { stroke-width: .6; }
+.d-visual::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,.25), transparent 30%), radial-gradient(120% 90% at 50% 50%, transparent 50%, rgba(0,0,0,.45)); }
+.ct-fallback { position: absolute; inset: -5%; background-size: cover; background-position: 50% 52%; filter: grayscale(1) contrast(1.1) brightness(.7); }
+/* readable copy over the first-person photo */
+.ct-dark::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(8,9,26,.86) 0%, rgba(8,9,26,.55) 38%, rgba(8,9,26,0) 68%); }
+@media (max-width: 820px) {
+  .ct-dark::before { background: linear-gradient(0deg, rgba(8,9,26,.92) 0%, rgba(8,9,26,.5) 45%, rgba(8,9,26,0) 75%); }
+}
+/* wide screens have room for both the nav links and the filter */
+@media (min-width: 1360px) {
+  body.grid-ready .nav-links { opacity: 1; transform: translateX(-50%); pointer-events: auto; }
+}

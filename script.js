@@ -49,55 +49,55 @@ const UI = {
    DATA
    ========================================================== */
 const CARDS = [
-  { id: "signature-cut", cat: "services", catLabel: "Haircuts", icon: "scissors", title: "Signature Haircut", tag: "Shaped to your face",
+  { id: "signature-cut", crop: [42, 43, 300], cat: "services", catLabel: "Haircuts", icon: "scissors", title: "Signature Haircut", tag: "Shaped to your face",
     g: "linear-gradient(160deg,#dfe3ff 0%,#eef0ff 45%,#fff2d9 100%)", c1: "#6a6fd8", c2: "#24285e",
     headline: "A cut that’s built around you", sub: "Consult. Cut. Finish.",
     text: "Every cut starts with a quick chat about your hair, your face shape and how you actually style it — then we cut to suit.",
     points: [["Consultation", "Talk through the look you want before the first snip."], ["Precision cut", "Scissor and clipper work tailored to your hair type."], ["Wash & style", "Finished properly, so you leave camera-ready."]],
     stat: ["Over 2,400 looks shared from the Drift chair.", "@driftbarber.lk on Instagram"] },
-  { id: "skin-fade", cat: "services", catLabel: "Fades", icon: "clipper", title: "Skin Fade", tag: "Clean blends every time",
+  { id: "skin-fade", crop: [80, 55, 300], cat: "services", catLabel: "Fades", icon: "clipper", title: "Skin Fade", tag: "Clean blends every time",
     g: "linear-gradient(165deg,#ff8a8a 0%,#ffb0a0 50%,#ffe0c4 100%)", c1: "#e2553f", c2: "#3a1520",
     headline: "Seamless fades, zero harsh lines", sub: "Low, mid, high or taper",
     text: "From a subtle taper to a sharp high skin fade, our barbers blend it smooth and line it up crisp.",
     points: [["Pick your fade", "Low, mid, high, drop or burst — we’ll guide you."], ["Blend & detail", "Gradual transitions with a clean finish."], ["Line-up", "Sharp edges on the hairline and neckline."]],
     stat: ["The most requested cut in both studios.", "Rajagiriya & Negombo"] },
-  { id: "beard", cat: "groom", catLabel: "Beard", icon: "beard", title: "Beard Sculpt", tag: "Lines that hold their shape",
+  { id: "beard", crop: [48, 30, 360], cat: "groom", catLabel: "Beard", icon: "beard", title: "Beard Sculpt", tag: "Lines that hold their shape",
     g: "linear-gradient(160deg,#fff7b8 0%,#ffe48a 50%,#f4c04f 100%)", c1: "#d79a2b", c2: "#3a2a10",
     headline: "Your beard, properly shaped", sub: "Trim. Shape. Line.",
     text: "Growing it out or keeping it tight, we shape your beard to balance your face and keep the edges sharp.",
     points: [["Trim & shape", "Length and shape matched to your face."], ["Razor lines", "Clean cheek and neck lines."], ["Finish", "Beard oil or balm so it looks and feels right."]],
     stat: ["A sharp beard line changes the whole look.", "Pair it with any cut"] },
-  { id: "shave", cat: "groom", catLabel: "Shave", icon: "razor", title: "Hot Towel Shave", tag: "Old-school smooth",
+  { id: "shave", crop: [45, 50, 420], cat: "groom", catLabel: "Shave", icon: "razor", title: "Hot Towel Shave", tag: "Old-school smooth",
     g: "linear-gradient(160deg,#ece9ff 0%,#dfe8ff 45%,#c9eef0 100%)", c1: "#4fa3b5", c2: "#14283a",
     headline: "The classic shave, done slowly", sub: "Warm towel. Sharp blade.",
     text: "A proper barber-chair shave: hot towels to prep, a close straight-edge finish and a cooling after-care.",
     points: [["Hot towel prep", "Opens up the skin and softens the hair."], ["Close shave", "Careful straight-edge work."], ["Cool down", "Soothing after-care to finish."]],
     stat: ["Ten minutes in the chair, smooth all day.", "Ask for it with your cut"] },
-  { id: "colour", cat: "services", catLabel: "Colour", icon: "colour", title: "Hair Colour", tag: "Bold or barely there",
+  { id: "colour", crop: [78, 25, 260], cat: "services", catLabel: "Colour", icon: "colour", title: "Hair Colour", tag: "Bold or barely there",
     g: "linear-gradient(165deg,#ffb347 0%,#ff8a5c 55%,#f0604d 100%)", fg: "#2b1410", c1: "#f0604d", c2: "#2b1410",
     headline: "Colour that makes a statement", sub: "From grey blending to full colour",
     text: "Cover the greys, add depth or go full platinum — talk to the studio about the shade you’re after.",
     points: [["Grey blending", "Natural-looking coverage."], ["Highlights & tones", "Add dimension and character."], ["Fashion colour", "Bleach and bold shades for the brave."]],
     stat: ["From subtle to platinum — your call.", "Consultation included"] },
-  { id: "styling", cat: "services", catLabel: "Styling", icon: "dryer", title: "Wash & Style", tag: "Ready for any occasion",
+  { id: "styling", crop: [32, 24, 320], cat: "services", catLabel: "Styling", icon: "dryer", title: "Wash & Style", tag: "Ready for any occasion",
     g: "linear-gradient(160deg,#ffe6d6 0%,#ffd8cc 45%,#bfe6ee 100%)", c1: "#e59a86", c2: "#2a2236",
     headline: "Walk in. Walk out event-ready.", sub: "Blow-dry and finish",
     text: "Wedding, shoot or a big night? A wash, blow-dry and styled finish that holds up all evening.",
     points: [["Wash", "Cleanse and condition."], ["Blow-dry", "Volume and direction set in."], ["Product finish", "Hold and texture to last the night."]],
     stat: ["Open until 10.30pm — perfect before a night out.", "Both studios, every day"] },
-  { id: "facial", cat: "groom", catLabel: "Skin", icon: "sparkle", title: "Facial & Skin Care", tag: "Fresh skin, fresh start",
+  { id: "facial", crop: [66, 12, 300], cat: "groom", catLabel: "Skin", icon: "sparkle", title: "Facial & Skin Care", tag: "Fresh skin, fresh start",
     g: "linear-gradient(165deg,#1d6e8c 0%,#2a93a8 55%,#5ec4c9 100%)", fg: "#ffffff", c1: "#2a93a8", c2: "#0c2430",
     headline: "Look as sharp as your cut", sub: "Cleanse. Refresh. Glow.",
     text: "A grooming facial to clear, refresh and brighten your skin — the perfect add-on to any cut or shave.",
     points: [["Deep cleanse", "Lift away oil, dirt and dead skin."], ["Mask & massage", "Relax while your skin recharges."], ["Hydrate", "Finish fresh and moisturised."]],
     stat: ["Great hair deserves great skin.", "Add on to any service"] },
-  { id: "kids", cat: "services", catLabel: "Kids", icon: "kid", title: "Kids’ Cuts", tag: "Little clients, big style",
+  { id: "kids", crop: [45, 60, 300], cat: "services", catLabel: "Kids", icon: "kid", title: "Kids’ Cuts", tag: "Little clients, big style",
     g: "linear-gradient(160deg,#fff9c4 0%,#f8f1b8 45%,#d6f2e4 100%)", c1: "#9fcf8f", c2: "#1d3324",
     headline: "Fresh cuts for the little ones", sub: "Patient barbers, happy kids",
     text: "A relaxed, friendly chair for younger clients — so they leave looking smart and wanting to come back.",
     points: [["Gentle approach", "Patient barbers who take it easy."], ["Trend or classic", "Whatever style they’re asking for."], ["Quick & tidy", "In and out without the fuss."]],
     stat: ["Their first great haircut starts here.", "Friendly for all ages"] },
-  { id: "treatment", cat: "groom", catLabel: "Treatments", icon: "treatment", title: "Hair Treatment", tag: "Healthier hair, every day",
+  { id: "treatment", crop: [82, 26, 280], cat: "groom", catLabel: "Treatments", icon: "treatment", title: "Hair Treatment", tag: "Healthier hair, every day",
     g: "linear-gradient(165deg,#2bb39b 0%,#4dc2b0 50%,#8fd3e6 100%)", fg: "#0f2b27", c1: "#2bb39b", c2: "#0d2a29",
     headline: "Bring tired hair back to life", sub: "Nourish & restore",
     text: "Treatments to tame frizz, repair damage and add shine — ask the studio which one suits your hair.",
@@ -141,22 +141,24 @@ const CARDS = [
 
 /* Mosaic tiles (desktop rect: left/top/width/height in %; mobile rect optional).
    Add a photo by setting img: "images/your-photo.jpg". */
+const PHOTO = "images/station-sm.jpg";
+// photo: [focus-x %, focus-y %, zoom %] — crops of the station photo, tinted by the tile gradient
 const TILES = [
-  { r: [0, -2, 13.5, 55], m: [0, -6, 31, 32], g: "linear-gradient(170deg,#3d2c58,#7a3d4d 60%,#c56b4b)", art: "chair", label: "The Drift chair", depth: .9 },
-  { r: [0, 55, 13.5, 50], m: [0, 74, 48, 30], g: "linear-gradient(160deg,#20304f,#36577a)", art: "comb", label: "Detail work", depth: .5 },
-  { r: [14.7, -10, 27, 32], m: [33, -6, 34, 32], g: "linear-gradient(140deg,#2a2f5e,#4a4f8f 55%,#8f7ab8)", art: "scissors", label: "Precision cuts", depth: .7 },
+  { r: [0, -2, 13.5, 55], m: [0, -6, 31, 32], g: "linear-gradient(170deg,#3d2c58,#7a3d4d 60%,#c56b4b)", photo: [50, 55, 260], label: "The Drift station", depth: .9 },
+  { r: [0, 55, 13.5, 50], m: [0, 74, 48, 30], g: "linear-gradient(160deg,#20304f,#36577a)", photo: [45, 60, 330], label: "Detail combs", depth: .5 },
+  { r: [14.7, -10, 27, 32], m: [33, -6, 34, 32], g: "linear-gradient(140deg,#2a2f5e,#4a4f8f 55%,#8f7ab8)", photo: [42, 43, 300], label: "Precision cuts", depth: .7 },
   { r: [42.9, -10, 13.5, 32], g: "linear-gradient(160deg,#fff7d6,#dff3ea)", light: true, depth: .35 },
-  { r: [57.3, -10, 13, 32], m: [69, -6, 31, 32], g: "linear-gradient(170deg,#5a2a2a,#a8553f)", art: "razor", label: "Hot towel shave", depth: .6 },
+  { r: [57.3, -10, 13, 32], m: [69, -6, 31, 32], g: "linear-gradient(170deg,#5a2a2a,#a8553f)", photo: [45, 50, 420], label: "Straight razor", depth: .6 },
   { r: [14.7, 24, 13.2, 52], g: "linear-gradient(170deg,#3a2a1a,#8f5a2c 60%,#d9a05b)", art: "beard", label: "Beard sculpt", depth: 1 },
-  { r: [71.3, -6, 20, 39], g: "linear-gradient(150deg,#163a44,#2a7b86 60%,#7fd0c8)", art: "sparkle", label: "Skin & facials", depth: .8 },
+  { r: [71.3, -6, 20, 39], g: "linear-gradient(150deg,#163a44,#2a7b86 60%,#7fd0c8)", photo: [66, 12, 300], label: "Brushes & dusters", depth: .8 },
   { r: [92.3, -6, 12, 39], g: "linear-gradient(170deg,#45233f,#b04f6c)", art: "colour", label: "Colour", depth: .45 },
   { r: [71.3, 35, 13, 30], g: "linear-gradient(160deg,#fbe9ff,#e6ecff)", light: true, stat: ["43.4K", "Instagram followers"], depth: .65 },
-  { r: [85.2, 35, 14, 30], g: "linear-gradient(170deg,#1f2a4a,#3c4f8a)", art: "clipper", label: "Skin fades", depth: .55 },
+  { r: [85.2, 35, 14, 30], g: "linear-gradient(170deg,#1f2a4a,#3c4f8a)", photo: [80, 55, 300], label: "Skin fades", depth: .55 },
   { r: [14.7, 78, 20, 30], m: [50, 74, 50, 30], g: "linear-gradient(160deg,#fff1dc,#ffd9c9)", light: true, stat: ["9am–10.30pm", "Open every day"], depth: .75 },
-  { r: [35.6, 78, 20, 30], g: "linear-gradient(150deg,#2c1e3e,#6c3a6b 60%,#c06a7a)", art: "dryer", label: "Wash & style", depth: .9 },
+  { r: [35.6, 78, 20, 30], g: "linear-gradient(150deg,#2c1e3e,#6c3a6b 60%,#c06a7a)", photo: [32, 24, 320], label: "Wash & style", depth: .9 },
   { r: [56.5, 78, 13.8, 30], g: "linear-gradient(170deg,#203a2e,#3f7a5a)", art: "pin", label: "Rajagiriya", depth: .4 },
-  { r: [71.3, 67, 20, 40], g: "linear-gradient(160deg,#2a1d12,#7a4a22 60%,#e0a25a)", art: "wave", label: "Negombo", depth: .7 },
-  { r: [92.3, 67, 12, 40], g: "linear-gradient(170deg,#e9e6ff,#d7f1ff)", light: true, depth: .5 },
+  { r: [71.3, 67, 20, 40], g: "linear-gradient(160deg,#2a1d12,#7a4a22 60%,#e0a25a)", photo: [82, 26, 280], label: "Uppercut finishes", depth: .7 },
+  { r: [92.3, 67, 12, 40], g: "linear-gradient(170deg,#e9e6ff,#d7f1ff)", light: true, art: "wave", label: "Negombo", depth: .5 },
 ];
 
 /* ==========================================================
@@ -216,11 +218,12 @@ const mosaic = $("#mosaic");
 mosaic.insertAdjacentHTML("afterbegin", TILES.map((t) => {
   const [l, tp, w, h] = t.r;
   const inner = t.img ? `<img src="${t.img}" alt="" loading="lazy">`
+    : t.photo ? `<span class="tile-photo" style="background-image:url(${PHOTO});background-position:${t.photo[0]}% ${t.photo[1]}%;background-size:${t.photo[2]}%"></span>`
     : t.stat ? `<span class="tile-stat"><strong>${t.stat[0]}</strong><span>${t.stat[1]}</span></span>`
     : t.art ? `<span class="tile-art">${ICONS[t.art]}</span>` : "";
   const label = t.label ? `<span class="tile-label">${t.label}</span>` : "";
   const mob = t.m ? `--ml:${t.m[0]}%;--mt:${t.m[1]}%;--mw:${t.m[2]}%;--mh:${t.m[3]}%;` : "";
-  return `<div class="tile${t.light ? " light" : ""}" data-depth="${t.depth}" data-mobile="${t.m ? 1 : 0}"
+  return `<div class="tile${t.light ? " light" : ""}${t.photo ? " has-photo" : ""}" data-depth="${t.depth}" data-mobile="${t.m ? 1 : 0}"
     style="--l:${l}%;--t:${tp}%;--w:${w}%;--h:${h}%;${mob}--g:${t.g}">${inner}${label}</div>`;
 }).join(""));
 // mobile tile positions
@@ -318,207 +321,122 @@ gsap.timeline({ delay: 0.15 })
   .from(".hero-sub", { y: 20, opacity: 0, duration: 0.9, ease: "power3.out" }, "-=0.6")
   .from(".hero-cue", { y: 14, opacity: 0, duration: 0.8, ease: "power3.out" }, "-=0.55")
   .from(".hero-corners > *", { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }, "-=0.7")
-  .from(".nav-right > *, .nav-links", { y: -16, opacity: 0, duration: 0.7, stagger: 0.06, ease: "power3.out" }, "-=0.8");
+  .from(".nav-ig, .menu-btn, .nav-links", { y: -16, opacity: 0, duration: 0.7, stagger: 0.06, ease: "power3.out", clearProps: "opacity,transform" }, "-=0.8");
 
 /* ==========================================================
-   3D SCENE — snipping barber scissors + floating Drift cards (Three.js)
+   FIRST-PERSON STATION — scroll-driven POV over the barber station photo
+   (WebGL shader with depth parallax; CSS fallback when WebGL is unavailable)
    ========================================================== */
-const POLE = { reveal: 0 };
-function buildPole3D() {
-  const canvas = $("#pole3d");
-  if (!window.THREE || !canvas) return;
-  let renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { return; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
-  renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.set(0, 0.2, 13);
-
-  // studio-style reflections for the chrome and glass
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const env = new THREE.Scene();
-  env.add(new THREE.Mesh(new THREE.BoxGeometry(30, 30, 30), new THREE.MeshBasicMaterial({ color: 0x181b40, side: THREE.BackSide })));
-  const panel = (color, x, y, z, w, h, ry = 0) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
-    m.position.set(x, y, z); m.rotation.y = ry; env.add(m);
-  };
-  panel(0xfff1d6, -8, 4, 2, 7, 12, Math.PI / 2);
-  panel(0xff7a66, 8, -1, 0, 4, 12, -Math.PI / 2);
-  panel(0x9fb4ff, 0, 9, 0, 14, 3);
-  panel(0xffffff, 0, 0, 12, 10, 4, Math.PI);
-  scene.environment = pmrem.fromScene(env, 0.04).texture;
-
-  // ---------- 3D professional hair-cutting shears (all chrome, offset handles) ----------
-  const chromeBlade = new THREE.MeshStandardMaterial({ color: 0xf4f5f8, metalness: 1, roughness: 0.07, envMapIntensity: 2 });
-  const chromeHandle = new THREE.MeshStandardMaterial({ color: 0xe9ebf0, metalness: 1, roughness: 0.12, envMapIntensity: 1.8 });
-  const satin = new THREE.MeshStandardMaterial({ color: 0xc9ccd4, metalness: 1, roughness: 0.32, envMapIntensity: 1.4 });
-  const bladeExtr = { depth: 0.035, bevelEnabled: true, bevelThickness: 0.022, bevelSize: 0.018, bevelSegments: 4, curveSegments: 48 };
-
-  function bladeShape(sg) {
-    // long, slim blade: straight cutting edge on y = 0, gently curved spine, needle tip
-    const sh = new THREE.Shape();
-    sh.moveTo(-0.2, 0);
-    sh.lineTo(-0.2, 0.17 * sg);
-    sh.bezierCurveTo(0.9, 0.22 * sg, 2.6, 0.13 * sg, 3.9, 0.005 * sg);
-    sh.lineTo(3.95, 0);
-    sh.lineTo(-0.2, 0);
-    return sh;
-  }
-  function tube(points, r, mat) {
-    const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(([x, y]) => new THREE.Vector3(x, y, 0))), 64, r, 20, false), mat);
-    m.scale.z = 0.62; // flattened like forged steel
-    return m;
-  }
-  function ringMesh(cx, cy, rx, ry, rot, tubeR) {
-    const m = new THREE.Mesh(new THREE.TorusGeometry(1, tubeR, 24, 96), chromeHandle);
-    m.scale.set(rx, ry, 0.62);
-    m.rotation.z = rot; m.position.set(cx, cy, 0);
-    return m;
-  }
-  function makeHalf(sg, z) {
-    const g = new THREE.Group();
-    const blade = new THREE.Mesh(new THREE.ExtrudeGeometry(bladeShape(sg), bladeExtr), chromeBlade);
-    blade.position.z = -0.017;
-    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.07, 64), chromeBlade);
-    plate.rotation.x = Math.PI / 2;
-    g.add(blade, plate);
-    if (sg > 0) {
-      // finger side: longer shank, larger ring, curved finger rest (tang)
-      g.add(tube([[-0.05, -0.08], [-0.55, -0.3], [-1.1, -0.6], [-1.55, -0.86]], 0.115, chromeHandle));
-      g.add(ringMesh(-2.05, -1.12, 0.5, 0.4, -0.45, 0.1));
-      g.add(tube([[-2.05, -1.52], [-2.15, -1.95], [-2.0, -2.45], [-1.78, -2.75]], 0.075, chromeHandle));
-      const silencer = new THREE.Mesh(new THREE.SphereGeometry(0.07, 20, 12), satin);
-      silencer.position.set(-1.55, -0.62, 0.05); g.add(silencer);
-    } else {
-      // thumb side: shorter shank, smaller ring (offset handle)
-      g.add(tube([[-0.05, 0.08], [-0.45, 0.24], [-0.9, 0.36], [-1.2, 0.42]], 0.115, chromeHandle));
-      g.add(ringMesh(-1.65, 0.5, 0.45, 0.37, 0.15, 0.1));
-    }
-    g.position.z = z;
-    return g;
-  }
-  const halfA = makeHalf(1, 0.055), halfB = makeHalf(-1, -0.055);
-  // adjustable pivot screw with slot
-  const screw = new THREE.Group();
-  const sBody = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.08, 48), satin); sBody.rotation.x = Math.PI / 2; sBody.position.z = 0.13;
-  const sKnob = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.08, 48), chromeBlade); sKnob.rotation.x = Math.PI / 2; sKnob.position.z = 0.2;
-  const sSlot = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.03, 0.03), new THREE.MeshStandardMaterial({ color: 0x2a2d36, metalness: 0.6, roughness: 0.5 }));
-  sSlot.position.z = 0.245;
-  const sBack = sBody.clone(); sBack.position.z = -0.13;
-  screw.add(sBody, sKnob, sSlot, sBack);
-  const scissors = new THREE.Group();
-  scissors.add(halfA, halfB, screw);
-  const pole = new THREE.Group(); // wrapper used for placement / parallax
-  pole.add(scissors);
-  scene.add(pole);
-
-  // hair clippings drifting down
-  const NH = 70, hpos = new Float32Array(NH * 6), hvel = [];
-  for (let k = 0; k < NH; k++) {
-    const x = (Math.random() - 0.5) * 7, y = Math.random() * 8 - 4, z = (Math.random() - 0.5) * 4;
-    const a = Math.random() * Math.PI, l = 0.08 + Math.random() * 0.16;
-    hpos.set([x, y, z, x + Math.cos(a) * l, y + Math.sin(a) * l, z], k * 6);
-    hvel.push(0.25 + Math.random() * 0.4);
-  }
-  const hg = new THREE.BufferGeometry(); hg.setAttribute("position", new THREE.BufferAttribute(hpos, 3));
-  const hair = new THREE.LineSegments(hg, new THREE.LineBasicMaterial({ color: 0x3a2a22, transparent: true, opacity: 0.8 }));
-  scene.add(hair);
-
-  // floating 3D Drift cards orbiting the pole
-  const cardTex = (c) => {
-    const w = 256, h = 362, cv = document.createElement("canvas"); cv.width = w; cv.height = h;
-    const g = cv.getContext("2d"), cols = c.g.match(/#[0-9a-f]{6}/gi) || ["#ffffff", "#dddddd"];
-    const r = 26;
-    g.beginPath(); g.moveTo(r, 0); g.arcTo(w, 0, w, h, r); g.arcTo(w, h, 0, h, r); g.arcTo(0, h, 0, 0, r); g.arcTo(0, 0, w, 0, r); g.closePath(); g.clip();
-    const lg = g.createLinearGradient(0, 0, w * 0.4, h);
-    cols.forEach((cc, k) => lg.addColorStop(k / Math.max(1, cols.length - 1), cc));
-    g.fillStyle = lg; g.fillRect(0, 0, w, h);
-    g.strokeStyle = "rgba(255,255,255,.65)"; g.lineWidth = 2; g.beginPath(); g.roundRect ? g.roundRect(10, 10, w - 20, h - 20, 18) : g.rect(10, 10, w - 20, h - 20); g.stroke();
-    g.fillStyle = c.fg || "#141833"; g.font = "600 26px 'Inter Tight', Arial, sans-serif";
-    c.title.split(" ").reduce((lines, wd) => { const l = lines[lines.length - 1]; (l + " " + wd).trim().length > 11 ? lines.push(wd) : (lines[lines.length - 1] = (l + " " + wd).trim()); return lines; }, [""])
-      .forEach((ln, k) => g.fillText(ln, 22, 46 + k * 30));
-    g.font = "700 13px Arial"; g.globalAlpha = 0.8; g.fillText(c.tag.toUpperCase().slice(0, 24), 22, h - 26);
-    const t = new THREE.CanvasTexture(cv); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t;
-  };
-  const floaters = [1, 6, 13].map((ci, k) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.63),
-      new THREE.MeshBasicMaterial({ map: cardTex(CARDS[ci]), transparent: true, side: THREE.DoubleSide, toneMapped: false }));
-    m.userData = { r: 1.9 + (k % 2) * 0.45, a: (k / 5) * Math.PI * 2, y: -1.4 + k * 0.7, sp: 0.18 + (k % 3) * 0.05, bob: k * 1.3 };
-    scene.add(m); return m;
-  });
-
-  // dust particles
-  const N_P = 260, pos = new Float32Array(N_P * 3);
-  for (let k = 0; k < N_P; k++) { pos[k * 3] = (Math.random() - 0.5) * 16; pos[k * 3 + 1] = (Math.random() - 0.5) * 9; pos[k * 3 + 2] = (Math.random() - 0.5) * 8; }
-  const pg = new THREE.BufferGeometry(); pg.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  const dust = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0xffd9a8, size: 0.035, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending }));
-  scene.add(dust);
-
-  scene.add(new THREE.AmbientLight(0x8890ff, 0.35));
-  const key = new THREE.DirectionalLight(0xffe0b8, 2.2); key.position.set(-4, 5, 6); scene.add(key);
-  const rim1 = new THREE.PointLight(0xff5a43, 30, 20); rim1.position.set(4, 1, -2); scene.add(rim1);
-  const rim2 = new THREE.PointLight(0x6f86ff, 24, 20); rim2.position.set(-3, -2, -3); scene.add(rim2);
-
-  // pointer parallax
-  const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
-  addEventListener("pointermove", (e) => { ptr.tx = e.clientX / innerWidth - 0.5; ptr.ty = e.clientY / innerHeight - 0.5; });
-
+const POV = { reveal: 0, travel: 0 };
+const STATION_IMG = "images/station.jpg";
+function buildStationPOV() {
+  const canvas = $("#station3d");
   const darkEl = $(".ct-dark");
-  let last = performance.now(), cw = 0, ch = 0;
-  function frame(now) {
-    requestAnimationFrame(frame);
-    const vis = POLE.reveal > 0.001 && parseFloat(getComputedStyle(darkEl).opacity) > 0.01 && scrollY < innerHeight * 12;
-    if (!vis) { last = now; return; }
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    if (w !== cw || h !== ch) { cw = w; ch = h; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
-    const wide = camera.aspect > 1.15;
-    const R = POLE.reveal;
-    ptr.x += (ptr.tx - ptr.x) * 0.05; ptr.y += (ptr.ty - ptr.y) * 0.05;
+  if (!canvas || !darkEl) return;
+  const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
+  addEventListener("pointermove", (e) => { ptr.tx = e.clientX / innerWidth - 0.5; ptr.ty = e.clientY / innerHeight - 0.5; }, { passive: true });
+  const visible = () => POV.reveal > 0.001 && parseFloat(getComputedStyle(darkEl).opacity) > 0.01;
 
-    // snip: quick close, slower open
-    const tt = now / 1000;
-    const cyc = (tt * 0.55) % 1;
-    const open = cyc < 0.25 ? 1 - Math.pow(cyc / 0.25, 2) : Math.pow((cyc - 0.25) / 0.75, 0.7);
-    const ang = 0.02 + open * 0.26 * R;
-    halfA.rotation.z = ang; halfB.rotation.z = -ang;
-    pole.position.set(wide ? 3.3 * Math.min(1.4, camera.aspect / 1.6) : 0, wide ? 0 : 1.3, 0);
-    scissors.rotation.y = Math.sin(tt * 0.5) * 0.5 + ptr.x * 0.6 + (1 - R) * 2.5;
-    scissors.rotation.x = -0.25 + ptr.y * 0.4 + Math.sin(tt * 0.7) * 0.08;
-    scissors.rotation.z = 0.95 + Math.sin(tt * 0.4) * 0.06;
-    scissors.position.set(0.6, -0.2 + Math.sin(tt * 0.9) * 0.12, 0);
-    const sc = (wide ? 0.95 : 0.68) * (0.55 + 0.45 * R);
-    pole.scale.setScalar(sc);
-    // falling clippings
-    const hp = hg.attributes.position.array;
-    for (let k = 0; k < NH; k++) {
-      const d = hvel[k] * dt; hp[k * 6 + 1] -= d; hp[k * 6 + 4] -= d;
-      hp[k * 6] += Math.sin(tt + k) * 0.002; hp[k * 6 + 3] += Math.sin(tt + k) * 0.002;
-      if (hp[k * 6 + 1] < -4.5) { hp[k * 6 + 1] += 9; hp[k * 6 + 4] += 9; }
-    }
-    hg.attributes.position.needsUpdate = true;
-    hair.position.x = pole.position.x;
-    hair.material.opacity = 0.8 * R;
-    floaters.forEach((m) => {
-      const u = m.userData; u.a += dt * u.sp;
-      m.position.set(pole.position.x + Math.cos(u.a) * u.r * 1.25 * sc, u.y * sc + Math.sin(now / 1000 + u.bob) * 0.15, Math.sin(u.a) * u.r * 0.6 * sc - 2.2);
-      m.rotation.y = -u.a + Math.PI / 2 + Math.sin(now / 1500 + u.bob) * 0.3;
-      m.rotation.z = Math.sin(now / 1800 + u.bob) * 0.12;
-      m.material.opacity = 0.85 * R;
-    });
-    dust.rotation.y += dt * 0.02;
-    dust.material.opacity = 0.7 * R;
-    camera.position.x = ptr.x * 0.8; camera.position.y = 0.2 - ptr.y * 0.5;
-    camera.lookAt(wide ? 1.2 : 0, 0, 0);
-    renderer.render(scene, camera);
+  const gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false });
+  if (!gl) {
+    // fallback: CSS zoom on the photo
+    canvas.style.display = "none";
+    const fb = document.createElement("div");
+    fb.className = "ct-fallback"; fb.style.backgroundImage = `url(${STATION_IMG})`;
+    darkEl.prepend(fb);
+    (function loop() {
+      requestAnimationFrame(loop);
+      if (!visible()) return;
+      ptr.x += (ptr.tx - ptr.x) * 0.06; ptr.y += (ptr.ty - ptr.y) * 0.06;
+      fb.style.transform = `scale(${1.08 + POV.travel * 0.45}) translate(${-ptr.x * 2 - POV.travel * 3}%, ${-ptr.y * 2 + POV.travel * 6}%)`;
+      fb.style.opacity = POV.reveal;
+    })();
+    return;
   }
-  requestAnimationFrame(frame);
+
+  const vs = `attribute vec2 p; varying vec2 vUv; void main(){ vUv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }`;
+  const fs = `
+  precision highp float;
+  varying vec2 vUv;
+  uniform sampler2D uTex;
+  uniform vec2 uRes;
+  uniform float uImgAspect, uTravel, uReveal, uTime, uWide;
+  uniform vec2 uMouse;
+  float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+  // hand-tuned depth for this photo: foreground = bottom-left, far end of the station = top-right
+  float depthAt(vec2 q){ return clamp((0.66 - q.y) * 1.7 + (0.5 - q.x) * 0.45 + 0.3, 0.0, 1.0); }
+  void main(){
+    vec2 uv = vUv;
+    float sa = uRes.x / uRes.y;
+    vec2 focus = mix(vec2(0.5, 0.5), vec2(0.5, 0.52), uWide);
+    vec2 sc = sa > uImgAspect ? vec2(1.0, uImgAspect / sa) : vec2(sa / uImgAspect, 1.0);
+    vec2 p = (uv - 0.5) * sc;                       // screen in image units, centred
+    float t = uTravel;
+    // camera: walk forward along the station + mouse look + gentle head sway
+    vec2 cam = focus + vec2(0.08, 0.17) * t + uMouse * vec2(0.03, 0.025);
+    cam += vec2(sin(uTime * 0.55), cos(uTime * 0.8)) * 0.0035;
+    float zoom = 1.1 + t * 0.6 + (1.0 - uReveal) * 0.25;
+    float roll = -uMouse.x * 0.035 + sin(uTime * 0.45) * 0.006;
+    p = mat2(cos(roll), -sin(roll), sin(roll), cos(roll)) * p;
+    vec2 q = cam + p / zoom;
+    // depth parallax: near objects slide / scale more than the far end
+    float d = depthAt(q);
+    q += (uMouse * vec2(0.045, 0.035) + vec2(-0.03, 0.05) * t) * (d - 0.45);
+    q = cam + (q - cam) / (1.0 + t * 0.4 * d);
+    q = clamp(q, vec2(0.002), vec2(0.998));
+    float lum = texture2D(uTex, vec2(q.x, 1.0 - q.y)).r;
+    lum = smoothstep(0.02, 0.98, lum);
+    // duotone grade: deep navy shadows, warm paper highlights
+    vec3 shadow = vec3(0.04, 0.045, 0.13), high = vec3(0.98, 0.93, 0.86);
+    vec3 col = mix(shadow, high, pow(lum, 1.05));
+    // brand-red light spill + a soft light sweep that moves as you walk
+    col += vec3(0.95, 0.3, 0.2) * 0.16 * smoothstep(0.35, 1.0, uv.x) * smoothstep(1.0, 0.2, uv.y);
+    float sweep = exp(-pow((uv.x * 0.8 + uv.y * 0.5 - (t * 1.8 - 0.3)) * 3.5, 2.0));
+    col += vec3(1.0, 0.86, 0.7) * sweep * 0.12;
+    // vignette, grain, fade in
+    vec2 v = uv - 0.5; col *= 1.0 - dot(v, v) * 1.3;
+    col += (hash(uv * uRes + fract(uTime) * 100.0) - 0.5) * 0.06;
+    gl_FragColor = vec4(col * uReveal, 1.0);
+  }`;
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.warn(gl.getShaderInfoLog(s)); return s; };
+  const prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(prog); gl.useProgram(prog);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; ["uTex", "uRes", "uImgAspect", "uTravel", "uReveal", "uTime", "uMouse", "uWide"].forEach((n) => (U[n] = gl.getUniformLocation(prog, n)));
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([20, 20, 30, 255]));
+  [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach((k) => gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE));
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  let imgAspect = 0.75;
+  const img = new Image();
+  img.onload = () => { gl.bindTexture(gl.TEXTURE_2D, tex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); imgAspect = img.width / img.height; };
+  img.src = STATION_IMG;
+  gl.uniform1i(U.uTex, 0);
+
+  let cw = 0, ch = 0;
+  const t0 = performance.now();
+  (function frame(now) {
+    requestAnimationFrame(frame);
+    if (!visible()) return;
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+    if (w !== cw || h !== ch) { cw = canvas.width = w; ch = canvas.height = h; gl.viewport(0, 0, w, h); }
+    ptr.x += (ptr.tx - ptr.x) * 0.05; ptr.y += (ptr.ty - ptr.y) * 0.05;
+    gl.uniform2f(U.uRes, w, h);
+    gl.uniform1f(U.uImgAspect, imgAspect);
+    gl.uniform1f(U.uTravel, POV.travel);
+    gl.uniform1f(U.uReveal, POV.reveal);
+    gl.uniform1f(U.uTime, (now - t0) / 1000);
+    gl.uniform2f(U.uMouse, ptr.x, -ptr.y);
+    gl.uniform1f(U.uWide, w > h ? 1 : 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  })(t0);
 }
-buildPole3D();
+buildStationPOV();
 
 /* ==========================================================
    1. INTRO — tiles fly in, center tile tells a story, expands full-screen
@@ -556,8 +474,9 @@ function buildIntro() {
     .fromTo(".ct-kicker", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, "expand+=0.65")
     .fromTo(words(".ct-final"), { yPercent: 115 }, { yPercent: 0, stagger: 0.045, duration: 0.5, ease: "power3.out" }, "expand+=0.75")
     .fromTo(".ct-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, "expand+=1.1")
-    .to(POLE, { reveal: 1, duration: 1, ease: "power2.out" }, "expand+=0.35")
-    .to({}, { duration: 0.35 });
+    .to(POV, { reveal: 1, duration: 0.8, ease: "power2.out" }, "expand+=0.2")
+    .fromTo(POV, { travel: 0 }, { travel: 1, duration: 2.1, ease: "power1.inOut" }, "expand+=0.2")
+    .to({}, { duration: 0.15 });
   return tl;
 }
 
@@ -947,6 +866,9 @@ function fillDetail(i) {
   $("#dText").textContent = c.text;
   const vis = $("#dVisual");
   vis.style.setProperty("--c1", c.c1); vis.style.setProperty("--c2", c.c2);
+  const crop = c.crop || [50, 50, 130];
+  $("#dPhoto").style.backgroundPosition = `${crop[0]}% ${crop[1]}%`;
+  $("#dPhoto").style.backgroundSize = `${crop[2]}%`;
   $("#dArt").innerHTML = c.img ? "" : ICONS[c.icon];
   vis.querySelector("img")?.remove();
   if (c.img) vis.insertAdjacentHTML("afterbegin", `<img src="${c.img}" alt="">`);

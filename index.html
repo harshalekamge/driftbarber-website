@@ -10,6 +10,8 @@
   <meta property="og:description" content="Your Hair, Your Beauty, Our Craft. Open 9am – 10.30pm." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://driftbarber.lk/" />
+  <meta property="og:image" content="https://driftbarber.lk/images/station.jpg" />
+  <link rel="preload" as="image" href="images/station.jpg" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23151833'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='16' text-anchor='middle' fill='%23ef5a43'%3ED%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -77,15 +79,13 @@
             <p class="ct-line ct-line1" data-split>A great cut changes your whole day.</p>
             <p class="ct-line ct-line2" data-split>But the right barber is rarely in the <em>cards</em>.</p>
           </div>
-          <div class="ct-dark" aria-hidden="true">
-            <span class="ct-glow g1"></span><span class="ct-glow g2"></span>
-            <canvas class="ct-3d" id="pole3d" aria-hidden="true"></canvas>
+          <div class="ct-dark">
+            <canvas class="ct-3d" id="station3d" aria-hidden="true"></canvas>
             <div class="ct-copy">
               <p class="ct-kicker">Rajagiriya · Negombo · Since day one</p>
               <p class="ct-final" data-split>Until you take a seat at <em>Drift</em>…</p>
               <p class="ct-sub">Two studios, one obsession: the perfect cut. Open every day, 9am – 10.30pm.</p>
             </div>
-            <span class="ct-grain"></span>
           </div>
         </div>
       </div>
@@ -214,6 +214,7 @@
         </div>
       </section>
       <section class="d-panel d-visual" id="dVisual" aria-hidden="true">
+        <span class="dv-photo" id="dPhoto"></span>
         <span class="dv-glow"></span>
         <span class="dv-art" id="dArt"></span>
         <span class="dv-label" id="dvLabel"></span>
@@ -246,7 +247,6 @@
   <script src="vendor/ScrollTrigger.min.js"></script>
   <script src="vendor/Flip.min.js"></script>
   <script src="vendor/lenis.min.js"></script>
-  <script src="vendor/three.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
