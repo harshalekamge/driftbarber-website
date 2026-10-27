@@ -346,58 +346,74 @@ function buildPole3D() {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
     m.position.set(x, y, z); m.rotation.y = ry; env.add(m);
   };
-  panel(0xffe2b0, -8, 4, 2, 6, 10, Math.PI / 2);
+  panel(0xfff1d6, -8, 4, 2, 7, 12, Math.PI / 2);
   panel(0xff7a66, 8, -1, 0, 4, 12, -Math.PI / 2);
   panel(0x9fb4ff, 0, 9, 0, 14, 3);
   panel(0xffffff, 0, 0, 12, 10, 4, Math.PI);
   scene.environment = pmrem.fromScene(env, 0.04).texture;
 
-  // ---------- 3D barber scissors ----------
-  const chromeBlade = new THREE.MeshStandardMaterial({ color: 0xeef0f6, metalness: 1, roughness: 0.14, envMapIntensity: 1.6 });
-  const handleMat = new THREE.MeshPhysicalMaterial({ color: 0xc9321f, metalness: 0.45, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.3 });
-  const goldMat = new THREE.MeshStandardMaterial({ color: 0xf4c27a, metalness: 1, roughness: 0.2, envMapIntensity: 1.5 });
-  const extr = { depth: 0.07, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025, bevelSegments: 3, curveSegments: 32 };
+  // ---------- 3D professional hair-cutting shears (all chrome, offset handles) ----------
+  const chromeBlade = new THREE.MeshStandardMaterial({ color: 0xf4f5f8, metalness: 1, roughness: 0.07, envMapIntensity: 2 });
+  const chromeHandle = new THREE.MeshStandardMaterial({ color: 0xe9ebf0, metalness: 1, roughness: 0.12, envMapIntensity: 1.8 });
+  const satin = new THREE.MeshStandardMaterial({ color: 0xc9ccd4, metalness: 1, roughness: 0.32, envMapIntensity: 1.4 });
+  const bladeExtr = { depth: 0.035, bevelEnabled: true, bevelThickness: 0.022, bevelSize: 0.018, bevelSegments: 4, curveSegments: 48 };
 
-  function makeHalf(flip) {
-    const g = new THREE.Group();
-    // blade: straight cutting edge on y=0, curved spine, sharp tip
+  function bladeShape(sg) {
+    // long, slim blade: straight cutting edge on y = 0, gently curved spine, needle tip
     const sh = new THREE.Shape();
-    sh.moveTo(-0.35, 0);
-    sh.lineTo(-0.35, 0.24);
-    sh.quadraticCurveTo(1.2, 0.34, 3.4, 0.02);
-    sh.lineTo(3.45, 0);
-    sh.lineTo(-0.35, 0);
-    const blade = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, extr), chromeBlade);
-    // shank sweeping down to the finger ring
-    const curve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-0.25, 0.12, 0.035), new THREE.Vector3(-0.7, -0.05, 0.035),
-      new THREE.Vector3(-1.1, -0.32, 0.035), new THREE.Vector3(-1.38, -0.5, 0.035),
-    ]);
-    const shank = new THREE.Mesh(new THREE.TubeGeometry(curve, 48, 0.09, 20, false), handleMat);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.095, 28, 80), handleMat);
-    ring.position.set(-1.78, -0.68, 0.035);
-    ring.scale.set(1.15, 0.92, 1);
-    // finger rest (tang) on one half, like real barber shears
-    const parts = [blade, shank, ring];
-    if (!flip) {
-      const tang = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
-        new THREE.Vector3(-2.1, -1.0, 0.035), new THREE.Vector3(-2.45, -1.25, 0.035), new THREE.Vector3(-2.75, -1.18, 0.035)]), 24, 0.06, 12, false), handleMat);
-      parts.push(tang);
+    sh.moveTo(-0.2, 0);
+    sh.lineTo(-0.2, 0.17 * sg);
+    sh.bezierCurveTo(0.9, 0.22 * sg, 2.6, 0.13 * sg, 3.9, 0.005 * sg);
+    sh.lineTo(3.95, 0);
+    sh.lineTo(-0.2, 0);
+    return sh;
+  }
+  function tube(points, r, mat) {
+    const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(([x, y]) => new THREE.Vector3(x, y, 0))), 64, r, 20, false), mat);
+    m.scale.z = 0.62; // flattened like forged steel
+    return m;
+  }
+  function ringMesh(cx, cy, rx, ry, rot, tubeR) {
+    const m = new THREE.Mesh(new THREE.TorusGeometry(1, tubeR, 24, 96), chromeHandle);
+    m.scale.set(rx, ry, 0.62);
+    m.rotation.z = rot; m.position.set(cx, cy, 0);
+    return m;
+  }
+  function makeHalf(sg, z) {
+    const g = new THREE.Group();
+    const blade = new THREE.Mesh(new THREE.ExtrudeGeometry(bladeShape(sg), bladeExtr), chromeBlade);
+    blade.position.z = -0.017;
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.07, 64), chromeBlade);
+    plate.rotation.x = Math.PI / 2;
+    g.add(blade, plate);
+    if (sg > 0) {
+      // finger side: longer shank, larger ring, curved finger rest (tang)
+      g.add(tube([[-0.05, -0.08], [-0.55, -0.3], [-1.1, -0.6], [-1.55, -0.86]], 0.115, chromeHandle));
+      g.add(ringMesh(-2.05, -1.12, 0.5, 0.4, -0.45, 0.1));
+      g.add(tube([[-2.05, -1.52], [-2.15, -1.95], [-2.0, -2.45], [-1.78, -2.75]], 0.075, chromeHandle));
+      const silencer = new THREE.Mesh(new THREE.SphereGeometry(0.07, 20, 12), satin);
+      silencer.position.set(-1.55, -0.62, 0.05); g.add(silencer);
+    } else {
+      // thumb side: shorter shank, smaller ring (offset handle)
+      g.add(tube([[-0.05, 0.08], [-0.45, 0.24], [-0.9, 0.36], [-1.2, 0.42]], 0.115, chromeHandle));
+      g.add(ringMesh(-1.65, 0.5, 0.45, 0.37, 0.15, 0.1));
     }
-    g.add(...parts);
-    if (flip) { g.scale.y = -1; g.position.z = -0.12; }
+    g.position.z = z;
     return g;
   }
-  const halfA = makeHalf(false), halfB = makeHalf(true);
-  const screw = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.32, 32), goldMat);
-  screw.rotation.x = Math.PI / 2; screw.position.z = -0.02;
-  const screwHead = new THREE.Mesh(new THREE.SphereGeometry(0.15, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), goldMat);
-  screwHead.rotation.x = Math.PI / 2; screwHead.position.z = 0.13;
+  const halfA = makeHalf(1, 0.055), halfB = makeHalf(-1, -0.055);
+  // adjustable pivot screw with slot
+  const screw = new THREE.Group();
+  const sBody = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.08, 48), satin); sBody.rotation.x = Math.PI / 2; sBody.position.z = 0.13;
+  const sKnob = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.08, 48), chromeBlade); sKnob.rotation.x = Math.PI / 2; sKnob.position.z = 0.2;
+  const sSlot = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.03, 0.03), new THREE.MeshStandardMaterial({ color: 0x2a2d36, metalness: 0.6, roughness: 0.5 }));
+  sSlot.position.z = 0.245;
+  const sBack = sBody.clone(); sBack.position.z = -0.13;
+  screw.add(sBody, sKnob, sSlot, sBack);
   const scissors = new THREE.Group();
-  scissors.add(halfA, halfB, screw, screwHead);
+  scissors.add(halfA, halfB, screw);
   const pole = new THREE.Group(); // wrapper used for placement / parallax
   pole.add(scissors);
-  scissors.rotation.z = 0.5;
   scene.add(pole);
 
   // hair clippings drifting down
@@ -428,7 +444,7 @@ function buildPole3D() {
     g.font = "700 13px Arial"; g.globalAlpha = 0.8; g.fillText(c.tag.toUpperCase().slice(0, 24), 22, h - 26);
     const t = new THREE.CanvasTexture(cv); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t;
   };
-  const floaters = [0, 1, 2, 6, 13].map((ci, k) => {
+  const floaters = [1, 6, 13].map((ci, k) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.63),
       new THREE.MeshBasicMaterial({ map: cardTex(CARDS[ci]), transparent: true, side: THREE.DoubleSide, toneMapped: false }));
     m.userData = { r: 1.9 + (k % 2) * 0.45, a: (k / 5) * Math.PI * 2, y: -1.4 + k * 0.7, sp: 0.18 + (k % 3) * 0.05, bob: k * 1.3 };
@@ -468,14 +484,14 @@ function buildPole3D() {
     const tt = now / 1000;
     const cyc = (tt * 0.55) % 1;
     const open = cyc < 0.25 ? 1 - Math.pow(cyc / 0.25, 2) : Math.pow((cyc - 0.25) / 0.75, 0.7);
-    const ang = 0.03 + open * 0.34 * R;
+    const ang = 0.02 + open * 0.26 * R;
     halfA.rotation.z = ang; halfB.rotation.z = -ang;
     pole.position.set(wide ? 3.3 * Math.min(1.4, camera.aspect / 1.6) : 0, wide ? 0 : 1.3, 0);
     scissors.rotation.y = Math.sin(tt * 0.5) * 0.5 + ptr.x * 0.6 + (1 - R) * 2.5;
-    scissors.rotation.x = -0.35 + ptr.y * 0.4 + Math.sin(tt * 0.7) * 0.08;
-    scissors.rotation.z = 0.55 + Math.sin(tt * 0.4) * 0.08;
-    scissors.position.y = Math.sin(tt * 0.9) * 0.12;
-    const sc = (wide ? 1.05 : 0.75) * (0.55 + 0.45 * R);
+    scissors.rotation.x = -0.25 + ptr.y * 0.4 + Math.sin(tt * 0.7) * 0.08;
+    scissors.rotation.z = 0.95 + Math.sin(tt * 0.4) * 0.06;
+    scissors.position.set(0.6, -0.2 + Math.sin(tt * 0.9) * 0.12, 0);
+    const sc = (wide ? 0.95 : 0.68) * (0.55 + 0.45 * R);
     pole.scale.setScalar(sc);
     // falling clippings
     const hp = hg.attributes.position.array;
@@ -489,10 +505,10 @@ function buildPole3D() {
     hair.material.opacity = 0.8 * R;
     floaters.forEach((m) => {
       const u = m.userData; u.a += dt * u.sp;
-      m.position.set(pole.position.x + Math.cos(u.a) * u.r * sc, u.y * sc + Math.sin(now / 1000 + u.bob) * 0.15, Math.sin(u.a) * u.r * sc);
+      m.position.set(pole.position.x + Math.cos(u.a) * u.r * 1.25 * sc, u.y * sc + Math.sin(now / 1000 + u.bob) * 0.15, Math.sin(u.a) * u.r * 0.6 * sc - 2.2);
       m.rotation.y = -u.a + Math.PI / 2 + Math.sin(now / 1500 + u.bob) * 0.3;
       m.rotation.z = Math.sin(now / 1800 + u.bob) * 0.12;
-      m.material.opacity = R;
+      m.material.opacity = 0.85 * R;
     });
     dust.rotation.y += dt * 0.02;
     dust.material.opacity = 0.7 * R;
@@ -507,6 +523,8 @@ buildPole3D();
 /* ==========================================================
    1. INTRO — tiles fly in, center tile tells a story, expands full-screen
    ========================================================== */
+let introTL = null;
+const INTRO_VH_PER_UNIT = 0.635; // same scroll speed as before for the opening
 function buildIntro() {
   const tiles = $$(".tile");
   const pushX = (el) => (el.offsetLeft + el.offsetWidth / 2 - innerWidth / 2) * 0.45;
@@ -514,30 +532,32 @@ function buildIntro() {
 
   const tl = gsap.timeline({
     defaults: { ease: "none" },
-    scrollTrigger: { trigger: "#intro", start: "top top", end: () => "+=" + innerHeight * 4.6, pin: true, scrub: 1.1, invalidateOnRefresh: true },
+    scrollTrigger: { trigger: "#intro", start: "top top", end: () => "+=" + innerHeight * (introTL ? introTL.duration() : 5.1) * INTRO_VH_PER_UNIT, pin: true, scrub: 1.1, invalidateOnRefresh: true },
   });
+  introTL = tl;
   tl.fromTo(tiles,
       { y: (i, el) => innerHeight * (0.85 + parseFloat(el.dataset.depth) * 1.0), scale: 0.9, rotation: (i) => (i % 2 ? 4 : -4) },
       { y: 0, scale: 1, rotation: 0, ease: "power2.out", duration: 1.5, stagger: { each: 0.035, from: "random" } }, 0)
     .to(".hero-corners", { opacity: 0, y: 20, duration: 0.4 }, 0.4)
     .to("#hero", { opacity: 0, y: -50, scale: 0.94, duration: 0.6 }, 1.0)
     .fromTo("#centerTile", { opacity: 0, scale: 0.86, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "power2.out" }, 1.15)
-    .fromTo(words(".ct-line1"), { yPercent: 115 }, { yPercent: 0, stagger: 0.04, duration: 0.45, ease: "power2.out" }, 1.4)
-    .to({}, { duration: 0.5 })
-    .to(words(".ct-line1"), { yPercent: -115, stagger: 0.03, duration: 0.4, ease: "power2.in" })
-    .fromTo(words(".ct-line2"), { yPercent: 115 }, { yPercent: 0, stagger: 0.04, duration: 0.45, ease: "power2.out" }, "<0.2")
-    .to(".mosaic-dim", { opacity: 0.55, duration: 0.6 }, "<")
-    .to({}, { duration: 0.5 })
+    // — from here on everything is ~40% shorter —
+    .fromTo(words(".ct-line1"), { yPercent: 115 }, { yPercent: 0, stagger: 0.025, duration: 0.3, ease: "power2.out" }, 1.4)
+    .to({}, { duration: 0.3 })
+    .to(words(".ct-line1"), { yPercent: -115, stagger: 0.02, duration: 0.25, ease: "power2.in" })
+    .fromTo(words(".ct-line2"), { yPercent: 115 }, { yPercent: 0, stagger: 0.025, duration: 0.3, ease: "power2.out" }, "<0.12")
+    .to(".mosaic-dim", { opacity: 0.55, duration: 0.4 }, "<")
+    .to({}, { duration: 0.3 })
     .addLabel("expand")
-    .to(".ct-light", { opacity: 0, duration: 0.3 }, "expand")
-    .to("#centerTile", { left: 0, top: 0, width: "100%", height: "100%", borderRadius: 0, duration: 1.6, ease: "power2.inOut" }, "expand")
-    .to(".ct-dark", { opacity: 1, duration: 0.6 }, "expand+=0.25")
-    .fromTo(tiles, { x: 0, y: 0, scale: 1, opacity: 1 }, { x: pushX, y: pushY, scale: 1.2, opacity: 0, duration: 1.1, ease: "power2.inOut", immediateRender: false }, "expand")
-    .fromTo(".ct-kicker", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "expand+=1.1")
-    .fromTo(words(".ct-final"), { yPercent: 115 }, { yPercent: 0, stagger: 0.07, duration: 0.8, ease: "power3.out" }, "expand+=1.25")
-    .fromTo(".ct-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, "expand+=1.8")
-    .to(POLE, { reveal: 1, duration: 1.6, ease: "power2.out" }, "expand+=0.6")
-    .to({}, { duration: 0.6 });
+    .to(".ct-light", { opacity: 0, duration: 0.2 }, "expand")
+    .to("#centerTile", { left: 0, top: 0, width: "100%", height: "100%", borderRadius: 0, duration: 1, ease: "power2.inOut" }, "expand")
+    .to(".ct-dark", { opacity: 1, duration: 0.4 }, "expand+=0.15")
+    .fromTo(tiles, { x: 0, y: 0, scale: 1, opacity: 1 }, { x: pushX, y: pushY, scale: 1.2, opacity: 0, duration: 0.7, ease: "power2.inOut", immediateRender: false }, "expand")
+    .fromTo(".ct-kicker", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, "expand+=0.65")
+    .fromTo(words(".ct-final"), { yPercent: 115 }, { yPercent: 0, stagger: 0.045, duration: 0.5, ease: "power3.out" }, "expand+=0.75")
+    .fromTo(".ct-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, "expand+=1.1")
+    .to(POLE, { reveal: 1, duration: 1, ease: "power2.out" }, "expand+=0.35")
+    .to({}, { duration: 0.35 });
   return tl;
 }
 
@@ -636,9 +656,9 @@ function renderDeck() {
     }
     const ps = easeIO(clamp01((pileP - (i / (N - 1)) * 0.5) / 0.5));
     if (ps > 0) {
-      x = lerp(x, W - 62 - i * 0.4, ps);
-      y = lerp(y, H - 72 - i * 0.6, ps);
-      s = lerp(s, 0.26, ps);
+      x = lerp(x, W - 67 - i * 0.4, ps);
+      y = lerp(y, H - 80 - i * 0.6, ps);
+      s = lerp(s, 0.31, ps);
       rot = lerp(rot, ((i % 3) - 1) * 6, ps);
     }
     el.style.transform = `translate3d(${(x - BASE_W / 2).toFixed(2)}px, ${(y - BASE_H / 2).toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(${s.toFixed(4)})`;
@@ -672,26 +692,26 @@ function buildDeckDesktop() {
     defaults: { ease: "none" },
     onUpdate: renderDeck,
     scrollTrigger: {
-      trigger: "#deck", start: "top top", end: () => "+=" + innerHeight * 7.2, pin: true, scrub: 1.1,
+      trigger: "#deck", start: "top top", end: () => "+=" + innerHeight * (deckTL ? deckTL.duration() : 11.8) * 0.6, pin: true, scrub: 1.1,
       invalidateOnRefresh: true,
       onRefresh: () => { measureStage(); renderDeck(); },
     },
   });
   gsap.set("#studios", { visibility: "visible", yPercent: 100 });
-  deckTL.fromTo(deck, { enter: 0 }, { enter: 1, duration: 1, ease: "power3.out" }, 0)
-    .fromTo(deck, { sweep: 30 }, { sweep: 30 + 9.4 * FAN_STEP, duration: 3.2, ease: "power1.inOut" }, 0.1)
-    .to(deck, { deal: 1, duration: 2, ease: "power1.inOut" })
+  deckTL.fromTo(deck, { enter: 0 }, { enter: 1, duration: 1.4, ease: "power3.out" }, 0)
+    .fromTo(deck, { sweep: 30 }, { sweep: 30 + 9.4 * FAN_STEP, duration: 4.5, ease: "power1.inOut" }, 0.14)
+    .to(deck, { deal: 1, duration: 2.8, ease: "power1.inOut" })
     .addLabel("grid")
-    .to({}, { duration: 1 })
+    // — from the grid on, everything is ~40% shorter —
+    .to({}, { duration: 0.6 })
     .addLabel("exit")
-    // the grid squeezes toward the corner while the studios slide up underneath
-    .to(deck, { shrink: 0.45, duration: 2, ease: "power1.inOut" }, "exit")
-    .fromTo("#studios", { yPercent: 100 }, { yPercent: 0, duration: 2.2, ease: "power2.out" }, "exit+=0.6")
-    .fromTo(".studios-title", { color: "#b9bdd0" }, { color: "#141833", duration: 1.4 }, "exit+=1.8")
-    .fromTo(".acc-item", { y: 80 }, { y: 0, duration: 1.8, stagger: 0.12, ease: "power2.out" }, "exit+=0.9")
-    .to(deck, { shrink: 1, duration: 1.6, ease: "power1.inOut" })
-    .addLabel("studios")
-    .to({}, { duration: 0.9 });
+    .to(deck, { shrink: 0.45, duration: 1.2, ease: "power1.inOut" }, "exit")
+    .fromTo("#studios", { yPercent: 100 }, { yPercent: 0, duration: 1.32, ease: "power2.out" }, "exit+=0.36")
+    .fromTo(".studios-title", { color: "#b9bdd0" }, { color: "#141833", duration: 0.84 }, "exit+=1.08")
+    .fromTo(".acc-item", { y: 80 }, { y: 0, duration: 1.08, stagger: 0.07, ease: "power2.out" }, "exit+=0.54")
+    .to(deck, { shrink: 1, duration: 1, ease: "power1.inOut" }, "exit+=1.3")
+    .addLabel("studios", "exit+=2.3")
+    .to({}, { duration: 0.55 }, "studios");
   gsap.fromTo(words("#deckTitle"), { yPercent: 115 }, {
     yPercent: 0, stagger: 0.04, duration: 0.9, ease: "power4.out",
     scrollTrigger: { trigger: "#deck", start: "top 70%", toggleActions: "play none none reverse" },
@@ -877,6 +897,7 @@ mm.add({ desktop: "(min-width: 821px)", mobile: "(max-width: 820px)" }, (ctx) =>
   return cleanup;
 });
 addEventListener("load", () => ScrollTrigger.refresh());
+requestAnimationFrame(() => ScrollTrigger.refresh());
 
 /* ==========================================================
    NAV links + MENU
