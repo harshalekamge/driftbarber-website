@@ -49,55 +49,55 @@ const UI = {
    DATA
    ========================================================== */
 const CARDS = [
-  { id: "signature-cut", crop: [42, 43, 300], cat: "services", catLabel: "Haircuts", icon: "scissors", title: "Signature Haircut", tag: "Shaped to your face",
+  { id: "signature-cut", cat: "services", catLabel: "Haircuts", icon: "scissors", title: "Signature Haircut", tag: "Shaped to your face",
     g: "linear-gradient(160deg,#dfe3ff 0%,#eef0ff 45%,#fff2d9 100%)", c1: "#6a6fd8", c2: "#24285e",
     headline: "A cut that’s built around you", sub: "Consult. Cut. Finish.",
     text: "Every cut starts with a quick chat about your hair, your face shape and how you actually style it — then we cut to suit.",
     points: [["Consultation", "Talk through the look you want before the first snip."], ["Precision cut", "Scissor and clipper work tailored to your hair type."], ["Wash & style", "Finished properly, so you leave camera-ready."]],
     stat: ["Over 2,400 looks shared from the Drift chair.", "@driftbarber.lk on Instagram"] },
-  { id: "skin-fade", crop: [80, 55, 300], cat: "services", catLabel: "Fades", icon: "clipper", title: "Skin Fade", tag: "Clean blends every time",
+  { id: "skin-fade", cat: "services", catLabel: "Fades", icon: "clipper", title: "Skin Fade", tag: "Clean blends every time",
     g: "linear-gradient(165deg,#ff8a8a 0%,#ffb0a0 50%,#ffe0c4 100%)", c1: "#e2553f", c2: "#3a1520",
     headline: "Seamless fades, zero harsh lines", sub: "Low, mid, high or taper",
     text: "From a subtle taper to a sharp high skin fade, our barbers blend it smooth and line it up crisp.",
     points: [["Pick your fade", "Low, mid, high, drop or burst — we’ll guide you."], ["Blend & detail", "Gradual transitions with a clean finish."], ["Line-up", "Sharp edges on the hairline and neckline."]],
     stat: ["The most requested cut in both studios.", "Rajagiriya & Negombo"] },
-  { id: "beard", crop: [48, 30, 360], cat: "groom", catLabel: "Beard", icon: "beard", title: "Beard Sculpt", tag: "Lines that hold their shape",
+  { id: "beard", cat: "groom", catLabel: "Beard", icon: "beard", title: "Beard Sculpt", tag: "Lines that hold their shape",
     g: "linear-gradient(160deg,#fff7b8 0%,#ffe48a 50%,#f4c04f 100%)", c1: "#d79a2b", c2: "#3a2a10",
     headline: "Your beard, properly shaped", sub: "Trim. Shape. Line.",
     text: "Growing it out or keeping it tight, we shape your beard to balance your face and keep the edges sharp.",
     points: [["Trim & shape", "Length and shape matched to your face."], ["Razor lines", "Clean cheek and neck lines."], ["Finish", "Beard oil or balm so it looks and feels right."]],
     stat: ["A sharp beard line changes the whole look.", "Pair it with any cut"] },
-  { id: "shave", crop: [45, 50, 420], cat: "groom", catLabel: "Shave", icon: "razor", title: "Hot Towel Shave", tag: "Old-school smooth",
+  { id: "shave", cat: "groom", catLabel: "Shave", icon: "razor", title: "Hot Towel Shave", tag: "Old-school smooth",
     g: "linear-gradient(160deg,#ece9ff 0%,#dfe8ff 45%,#c9eef0 100%)", c1: "#4fa3b5", c2: "#14283a",
     headline: "The classic shave, done slowly", sub: "Warm towel. Sharp blade.",
     text: "A proper barber-chair shave: hot towels to prep, a close straight-edge finish and a cooling after-care.",
     points: [["Hot towel prep", "Opens up the skin and softens the hair."], ["Close shave", "Careful straight-edge work."], ["Cool down", "Soothing after-care to finish."]],
     stat: ["Ten minutes in the chair, smooth all day.", "Ask for it with your cut"] },
-  { id: "colour", crop: [78, 25, 260], cat: "services", catLabel: "Colour", icon: "colour", title: "Hair Colour", tag: "Bold or barely there",
+  { id: "colour", cat: "services", catLabel: "Colour", icon: "colour", title: "Hair Colour", tag: "Bold or barely there",
     g: "linear-gradient(165deg,#ffb347 0%,#ff8a5c 55%,#f0604d 100%)", fg: "#2b1410", c1: "#f0604d", c2: "#2b1410",
     headline: "Colour that makes a statement", sub: "From grey blending to full colour",
     text: "Cover the greys, add depth or go full platinum — talk to the studio about the shade you’re after.",
     points: [["Grey blending", "Natural-looking coverage."], ["Highlights & tones", "Add dimension and character."], ["Fashion colour", "Bleach and bold shades for the brave."]],
     stat: ["From subtle to platinum — your call.", "Consultation included"] },
-  { id: "styling", crop: [32, 24, 320], cat: "services", catLabel: "Styling", icon: "dryer", title: "Wash & Style", tag: "Ready for any occasion",
+  { id: "styling", cat: "services", catLabel: "Styling", icon: "dryer", title: "Wash & Style", tag: "Ready for any occasion",
     g: "linear-gradient(160deg,#ffe6d6 0%,#ffd8cc 45%,#bfe6ee 100%)", c1: "#e59a86", c2: "#2a2236",
     headline: "Walk in. Walk out event-ready.", sub: "Blow-dry and finish",
     text: "Wedding, shoot or a big night? A wash, blow-dry and styled finish that holds up all evening.",
     points: [["Wash", "Cleanse and condition."], ["Blow-dry", "Volume and direction set in."], ["Product finish", "Hold and texture to last the night."]],
     stat: ["Open until 10.30pm — perfect before a night out.", "Both studios, every day"] },
-  { id: "facial", crop: [66, 12, 300], cat: "groom", catLabel: "Skin", icon: "sparkle", title: "Facial & Skin Care", tag: "Fresh skin, fresh start",
+  { id: "facial", cat: "groom", catLabel: "Skin", icon: "sparkle", title: "Facial & Skin Care", tag: "Fresh skin, fresh start",
     g: "linear-gradient(165deg,#1d6e8c 0%,#2a93a8 55%,#5ec4c9 100%)", fg: "#ffffff", c1: "#2a93a8", c2: "#0c2430",
     headline: "Look as sharp as your cut", sub: "Cleanse. Refresh. Glow.",
     text: "A grooming facial to clear, refresh and brighten your skin — the perfect add-on to any cut or shave.",
     points: [["Deep cleanse", "Lift away oil, dirt and dead skin."], ["Mask & massage", "Relax while your skin recharges."], ["Hydrate", "Finish fresh and moisturised."]],
     stat: ["Great hair deserves great skin.", "Add on to any service"] },
-  { id: "kids", crop: [45, 60, 300], cat: "services", catLabel: "Kids", icon: "kid", title: "Kids’ Cuts", tag: "Little clients, big style",
+  { id: "kids", cat: "services", catLabel: "Kids", icon: "kid", title: "Kids’ Cuts", tag: "Little clients, big style",
     g: "linear-gradient(160deg,#fff9c4 0%,#f8f1b8 45%,#d6f2e4 100%)", c1: "#9fcf8f", c2: "#1d3324",
     headline: "Fresh cuts for the little ones", sub: "Patient barbers, happy kids",
     text: "A relaxed, friendly chair for younger clients — so they leave looking smart and wanting to come back.",
     points: [["Gentle approach", "Patient barbers who take it easy."], ["Trend or classic", "Whatever style they’re asking for."], ["Quick & tidy", "In and out without the fuss."]],
     stat: ["Their first great haircut starts here.", "Friendly for all ages"] },
-  { id: "treatment", crop: [82, 26, 280], cat: "groom", catLabel: "Treatments", icon: "treatment", title: "Hair Treatment", tag: "Healthier hair, every day",
+  { id: "treatment", cat: "groom", catLabel: "Treatments", icon: "treatment", title: "Hair Treatment", tag: "Healthier hair, every day",
     g: "linear-gradient(165deg,#2bb39b 0%,#4dc2b0 50%,#8fd3e6 100%)", fg: "#0f2b27", c1: "#2bb39b", c2: "#0d2a29",
     headline: "Bring tired hair back to life", sub: "Nourish & restore",
     text: "Treatments to tame frizz, repair damage and add shine — ask the studio which one suits your hair.",
@@ -141,24 +141,22 @@ const CARDS = [
 
 /* Mosaic tiles (desktop rect: left/top/width/height in %; mobile rect optional).
    Add a photo by setting img: "images/your-photo.jpg". */
-const PHOTO = "images/station-sm.jpg";
-// photo: [focus-x %, focus-y %, zoom %] — crops of the station photo, tinted by the tile gradient
 const TILES = [
-  { r: [0, -2, 13.5, 55], m: [0, -6, 31, 32], g: "linear-gradient(170deg,#3d2c58,#7a3d4d 60%,#c56b4b)", photo: [50, 55, 260], label: "The Drift station", depth: .9 },
-  { r: [0, 55, 13.5, 50], m: [0, 74, 48, 30], g: "linear-gradient(160deg,#20304f,#36577a)", photo: [45, 60, 330], label: "Detail combs", depth: .5 },
-  { r: [14.7, -10, 27, 32], m: [33, -6, 34, 32], g: "linear-gradient(140deg,#2a2f5e,#4a4f8f 55%,#8f7ab8)", photo: [42, 43, 300], label: "Precision cuts", depth: .7 },
+  { r: [0, -2, 13.5, 55], m: [0, -6, 31, 32], g: "linear-gradient(170deg,#3d2c58,#7a3d4d 60%,#c56b4b)", art: "chair", label: "The Drift chair", depth: .9 },
+  { r: [0, 55, 13.5, 50], m: [0, 74, 48, 30], g: "linear-gradient(160deg,#20304f,#36577a)", art: "comb", label: "Detail work", depth: .5 },
+  { r: [14.7, -10, 27, 32], m: [33, -6, 34, 32], g: "linear-gradient(140deg,#2a2f5e,#4a4f8f 55%,#8f7ab8)", art: "scissors", label: "Precision cuts", depth: .7 },
   { r: [42.9, -10, 13.5, 32], g: "linear-gradient(160deg,#fff7d6,#dff3ea)", light: true, depth: .35 },
-  { r: [57.3, -10, 13, 32], m: [69, -6, 31, 32], g: "linear-gradient(170deg,#5a2a2a,#a8553f)", photo: [45, 50, 420], label: "Straight razor", depth: .6 },
+  { r: [57.3, -10, 13, 32], m: [69, -6, 31, 32], g: "linear-gradient(170deg,#5a2a2a,#a8553f)", art: "razor", label: "Hot towel shave", depth: .6 },
   { r: [14.7, 24, 13.2, 52], g: "linear-gradient(170deg,#3a2a1a,#8f5a2c 60%,#d9a05b)", art: "beard", label: "Beard sculpt", depth: 1 },
-  { r: [71.3, -6, 20, 39], g: "linear-gradient(150deg,#163a44,#2a7b86 60%,#7fd0c8)", photo: [66, 12, 300], label: "Brushes & dusters", depth: .8 },
+  { r: [71.3, -6, 20, 39], g: "linear-gradient(150deg,#163a44,#2a7b86 60%,#7fd0c8)", art: "sparkle", label: "Skin & facials", depth: .8 },
   { r: [92.3, -6, 12, 39], g: "linear-gradient(170deg,#45233f,#b04f6c)", art: "colour", label: "Colour", depth: .45 },
   { r: [71.3, 35, 13, 30], g: "linear-gradient(160deg,#fbe9ff,#e6ecff)", light: true, stat: ["43.4K", "Instagram followers"], depth: .65 },
-  { r: [85.2, 35, 14, 30], g: "linear-gradient(170deg,#1f2a4a,#3c4f8a)", photo: [80, 55, 300], label: "Skin fades", depth: .55 },
+  { r: [85.2, 35, 14, 30], g: "linear-gradient(170deg,#1f2a4a,#3c4f8a)", art: "clipper", label: "Skin fades", depth: .55 },
   { r: [14.7, 78, 20, 30], m: [50, 74, 50, 30], g: "linear-gradient(160deg,#fff1dc,#ffd9c9)", light: true, stat: ["9am–10.30pm", "Open every day"], depth: .75 },
-  { r: [35.6, 78, 20, 30], g: "linear-gradient(150deg,#2c1e3e,#6c3a6b 60%,#c06a7a)", photo: [32, 24, 320], label: "Wash & style", depth: .9 },
+  { r: [35.6, 78, 20, 30], g: "linear-gradient(150deg,#2c1e3e,#6c3a6b 60%,#c06a7a)", art: "dryer", label: "Wash & style", depth: .9 },
   { r: [56.5, 78, 13.8, 30], g: "linear-gradient(170deg,#203a2e,#3f7a5a)", art: "pin", label: "Rajagiriya", depth: .4 },
-  { r: [71.3, 67, 20, 40], g: "linear-gradient(160deg,#2a1d12,#7a4a22 60%,#e0a25a)", photo: [82, 26, 280], label: "Uppercut finishes", depth: .7 },
-  { r: [92.3, 67, 12, 40], g: "linear-gradient(170deg,#e9e6ff,#d7f1ff)", light: true, art: "wave", label: "Negombo", depth: .5 },
+  { r: [71.3, 67, 20, 40], g: "linear-gradient(160deg,#2a1d12,#7a4a22 60%,#e0a25a)", art: "wave", label: "Negombo", depth: .7 },
+  { r: [92.3, 67, 12, 40], g: "linear-gradient(170deg,#e9e6ff,#d7f1ff)", light: true, art: "treatment", label: "Treatments", depth: .5 },
 ];
 
 /* ==========================================================
@@ -218,12 +216,11 @@ const mosaic = $("#mosaic");
 mosaic.insertAdjacentHTML("afterbegin", TILES.map((t) => {
   const [l, tp, w, h] = t.r;
   const inner = t.img ? `<img src="${t.img}" alt="" loading="lazy">`
-    : t.photo ? `<span class="tile-photo" style="background-image:url(${PHOTO});background-position:${t.photo[0]}% ${t.photo[1]}%;background-size:${t.photo[2]}%"></span>`
     : t.stat ? `<span class="tile-stat"><strong>${t.stat[0]}</strong><span>${t.stat[1]}</span></span>`
     : t.art ? `<span class="tile-art">${ICONS[t.art]}</span>` : "";
   const label = t.label ? `<span class="tile-label">${t.label}</span>` : "";
   const mob = t.m ? `--ml:${t.m[0]}%;--mt:${t.m[1]}%;--mw:${t.m[2]}%;--mh:${t.m[3]}%;` : "";
-  return `<div class="tile${t.light ? " light" : ""}${t.photo ? " has-photo" : ""}" data-depth="${t.depth}" data-mobile="${t.m ? 1 : 0}"
+  return `<div class="tile${t.light ? " light" : ""}" data-depth="${t.depth}" data-mobile="${t.m ? 1 : 0}"
     style="--l:${l}%;--t:${tp}%;--w:${w}%;--h:${h}%;${mob}--g:${t.g}">${inner}${label}</div>`;
 }).join(""));
 // mobile tile positions
@@ -324,99 +321,85 @@ gsap.timeline({ delay: 0.15 })
   .from(".nav-ig, .menu-btn, .nav-links", { y: -16, opacity: 0, duration: 0.7, stagger: 0.06, ease: "power3.out", clearProps: "opacity,transform" }, "-=0.8");
 
 /* ==========================================================
-   FIRST-PERSON STATION — scroll-driven POV over the barber station photo
-   (WebGL shader with depth parallax; CSS fallback when WebGL is unavailable)
+   FIRST-PERSON WALK-IN — scroll-driven WebGL scene (no photos):
+   a barbershop checkerboard floor stretching ahead + warm bokeh lights drifting past
    ========================================================== */
 const POV = { reveal: 0, travel: 0 };
-const STATION_IMG = "images/station.jpg";
-function buildStationPOV() {
-  const canvas = $("#station3d");
+function buildWalkIn() {
+  const canvas = $("#walkin3d");
   const darkEl = $(".ct-dark");
   if (!canvas || !darkEl) return;
   const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
   addEventListener("pointermove", (e) => { ptr.tx = e.clientX / innerWidth - 0.5; ptr.ty = e.clientY / innerHeight - 0.5; }, { passive: true });
   const visible = () => POV.reveal > 0.001 && parseFloat(getComputedStyle(darkEl).opacity) > 0.01;
-
-  const gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false });
-  if (!gl) {
-    // fallback: CSS zoom on the photo
-    canvas.style.display = "none";
-    const fb = document.createElement("div");
-    fb.className = "ct-fallback"; fb.style.backgroundImage = `url(${STATION_IMG})`;
-    darkEl.prepend(fb);
-    (function loop() {
-      requestAnimationFrame(loop);
-      if (!visible()) return;
-      ptr.x += (ptr.tx - ptr.x) * 0.06; ptr.y += (ptr.ty - ptr.y) * 0.06;
-      fb.style.transform = `scale(${1.08 + POV.travel * 0.45}) translate(${-ptr.x * 2 - POV.travel * 3}%, ${-ptr.y * 2 + POV.travel * 6}%)`;
-      fb.style.opacity = POV.reveal;
-    })();
-    return;
-  }
+  const gl = canvas.getContext("webgl", { antialias: false });
+  if (!gl) { canvas.style.display = "none"; return; } // the CSS gradient behind stays
 
   const vs = `attribute vec2 p; varying vec2 vUv; void main(){ vUv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }`;
   const fs = `
   precision highp float;
   varying vec2 vUv;
-  uniform sampler2D uTex;
-  uniform vec2 uRes;
-  uniform float uImgAspect, uTravel, uReveal, uTime, uWide;
-  uniform vec2 uMouse;
+  uniform vec2 uRes, uMouse;
+  uniform float uTravel, uReveal, uTime;
   float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
-  // hand-tuned depth for this photo: foreground = bottom-left, far end of the station = top-right
-  float depthAt(vec2 q){ return clamp((0.66 - q.y) * 1.7 + (0.5 - q.x) * 0.45 + 0.3, 0.0, 1.0); }
+  vec3 bokeh(vec2 p, float scale, float seed){
+    vec2 g = p * scale; vec2 id = floor(g); vec2 f = fract(g) - 0.5;
+    vec2 off = vec2(hash(id + seed), hash(id + seed + 4.1)) - 0.5;
+    float r = 0.16 + 0.18 * hash(id + seed + 7.3);
+    float d = length(f - off * 0.55);
+    float on = step(0.62, hash(id + seed + 2.9));
+    float disc = (smoothstep(r, r * 0.55, d) * 0.7 + smoothstep(r * 1.2, 0.0, d) * 0.3) * on;
+    float k = hash(id + seed + 9.7);
+    vec3 col = k < 0.5 ? vec3(1.0, 0.42, 0.3) : k < 0.85 ? vec3(1.0, 0.8, 0.52) : vec3(0.55, 0.6, 1.0);
+    return col * disc;
+  }
   void main(){
     vec2 uv = vUv;
-    float sa = uRes.x / uRes.y;
-    vec2 focus = mix(vec2(0.5, 0.5), vec2(0.5, 0.52), uWide);
-    vec2 sc = sa > uImgAspect ? vec2(1.0, uImgAspect / sa) : vec2(sa / uImgAspect, 1.0);
-    vec2 p = (uv - 0.5) * sc;                       // screen in image units, centred
-    float t = uTravel;
-    // camera: walk forward along the station + mouse look + gentle head sway
-    vec2 cam = focus + vec2(0.08, 0.17) * t + uMouse * vec2(0.03, 0.025);
-    cam += vec2(sin(uTime * 0.55), cos(uTime * 0.8)) * 0.0035;
-    float zoom = 1.1 + t * 0.6 + (1.0 - uReveal) * 0.25;
-    float roll = -uMouse.x * 0.035 + sin(uTime * 0.45) * 0.006;
-    p = mat2(cos(roll), -sin(roll), sin(roll), cos(roll)) * p;
-    vec2 q = cam + p / zoom;
-    // depth parallax: near objects slide / scale more than the far end
-    float d = depthAt(q);
-    q += (uMouse * vec2(0.045, 0.035) + vec2(-0.03, 0.05) * t) * (d - 0.45);
-    q = cam + (q - cam) / (1.0 + t * 0.4 * d);
-    q = clamp(q, vec2(0.002), vec2(0.998));
-    float lum = texture2D(uTex, vec2(q.x, 1.0 - q.y)).r;
-    lum = smoothstep(0.02, 0.98, lum);
-    // duotone grade: deep navy shadows, warm paper highlights
-    vec3 shadow = vec3(0.04, 0.045, 0.13), high = vec3(0.98, 0.93, 0.86);
-    vec3 col = mix(shadow, high, pow(lum, 1.05));
-    // brand-red light spill + a soft light sweep that moves as you walk
-    col += vec3(0.95, 0.3, 0.2) * 0.16 * smoothstep(0.35, 1.0, uv.x) * smoothstep(1.0, 0.2, uv.y);
-    float sweep = exp(-pow((uv.x * 0.8 + uv.y * 0.5 - (t * 1.8 - 0.3)) * 3.5, 2.0));
-    col += vec3(1.0, 0.86, 0.7) * sweep * 0.12;
-    // vignette, grain, fade in
-    vec2 v = uv - 0.5; col *= 1.0 - dot(v, v) * 1.3;
-    col += (hash(uv * uRes + fract(uTime) * 100.0) - 0.5) * 0.06;
+    vec2 p = (uv - 0.5) * vec2(uRes.x / uRes.y, 1.0);
+    float t = uTravel, time = uTime;
+    // camera look + gentle sway
+    p += uMouse * vec2(0.08, 0.05) + vec2(sin(time * 0.5), cos(time * 0.7)) * 0.004;
+    float roll = -uMouse.x * 0.05; p = mat2(cos(roll), -sin(roll), sin(roll), cos(roll)) * p;
+    // backdrop
+    vec3 col = mix(vec3(0.05, 0.055, 0.15), vec3(0.16, 0.11, 0.3), smoothstep(-0.5, 0.5, p.y));
+    col += vec3(0.9, 0.3, 0.22) * 0.22 * exp(-pow(length(p - vec2(0.35, 0.12)) * 2.2, 2.0));
+    col += vec3(1.0, 0.75, 0.45) * 0.12 * exp(-pow(length(p - vec2(-0.3, 0.25)) * 2.6, 2.0));
+    // checkerboard floor in perspective — walking forward as you scroll
+    float hz = 0.02 - uMouse.y * 0.03;
+    if (p.y < hz) {
+      float z = 0.32 / (hz - p.y);
+      vec2 fp = vec2(p.x * z, z + t * 6.0 + time * 0.12);
+      vec2 c = floor(fp * 1.4);
+      float ch = mod(c.x + c.y, 2.0);
+      vec2 e = abs(fract(fp * 1.4) - 0.5);
+      float edge = smoothstep(0.5, 0.47, max(e.x, e.y));
+      vec3 tile = mix(vec3(0.06, 0.06, 0.1), vec3(0.85, 0.82, 0.78), ch) * mix(0.7, 1.0, edge);
+      tile += vec3(1.0, 0.45, 0.3) * 0.25 * exp(-pow(p.x - 0.35 * 0.0, 2.0) * 6.0) * (0.3 / z); // reflected light
+      float fog = exp(-z * 0.42);
+      col = mix(col, tile, fog * 0.85);
+    } else {
+      col += vec3(1.0, 0.6, 0.4) * 0.06 * exp(-(p.y - hz) * 18.0); // horizon glow
+    }
+    // bokeh lights flying past at different depths
+    for (int i = 0; i < 4; i++) {
+      float fi = float(i);
+      float z = fract(fi / 4.0 + t * 0.9 + time * 0.015);
+      float s = mix(5.0, 0.9, z);
+      vec2 lp = p + uMouse * 0.12 * z + vec2(0.0, -0.06 * z);
+      col += bokeh(lp, s, fi * 13.0) * sin(z * 3.14159) * 0.55;
+    }
+    // vignette, grain, fade-in
+    vec2 v = uv - 0.5; col *= 1.0 - dot(v, v) * 1.2;
+    col += (hash(uv * uRes + fract(time) * 100.0) - 0.5) * 0.05;
     gl_FragColor = vec4(col * uReveal, 1.0);
   }`;
   const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.warn(gl.getShaderInfoLog(s)); return s; };
   const prog = gl.createProgram();
   gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(prog); gl.useProgram(prog);
-  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(prog, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = {}; ["uTex", "uRes", "uImgAspect", "uTravel", "uReveal", "uTime", "uMouse", "uWide"].forEach((n) => (U[n] = gl.getUniformLocation(prog, n)));
-  const tex = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, tex);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([20, 20, 30, 255]));
-  [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach((k) => gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE));
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  let imgAspect = 0.75;
-  const img = new Image();
-  img.onload = () => { gl.bindTexture(gl.TEXTURE_2D, tex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); imgAspect = img.width / img.height; };
-  img.src = STATION_IMG;
-  gl.uniform1i(U.uTex, 0);
-
+  const U = {}; ["uRes", "uTravel", "uReveal", "uTime", "uMouse"].forEach((n) => (U[n] = gl.getUniformLocation(prog, n)));
   let cw = 0, ch = 0;
   const t0 = performance.now();
   (function frame(now) {
@@ -427,16 +410,14 @@ function buildStationPOV() {
     if (w !== cw || h !== ch) { cw = canvas.width = w; ch = canvas.height = h; gl.viewport(0, 0, w, h); }
     ptr.x += (ptr.tx - ptr.x) * 0.05; ptr.y += (ptr.ty - ptr.y) * 0.05;
     gl.uniform2f(U.uRes, w, h);
-    gl.uniform1f(U.uImgAspect, imgAspect);
     gl.uniform1f(U.uTravel, POV.travel);
     gl.uniform1f(U.uReveal, POV.reveal);
     gl.uniform1f(U.uTime, (now - t0) / 1000);
     gl.uniform2f(U.uMouse, ptr.x, -ptr.y);
-    gl.uniform1f(U.uWide, w > h ? 1 : 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   })(t0);
 }
-buildStationPOV();
+buildWalkIn();
 
 /* ==========================================================
    1. INTRO — tiles fly in, center tile tells a story, expands full-screen
@@ -866,9 +847,6 @@ function fillDetail(i) {
   $("#dText").textContent = c.text;
   const vis = $("#dVisual");
   vis.style.setProperty("--c1", c.c1); vis.style.setProperty("--c2", c.c2);
-  const crop = c.crop || [50, 50, 130];
-  $("#dPhoto").style.backgroundPosition = `${crop[0]}% ${crop[1]}%`;
-  $("#dPhoto").style.backgroundSize = `${crop[2]}%`;
   $("#dArt").innerHTML = c.img ? "" : ICONS[c.icon];
   vis.querySelector("img")?.remove();
   if (c.img) vis.insertAdjacentHTML("afterbegin", `<img src="${c.img}" alt="">`);

@@ -546,20 +546,9 @@ body.deck-scatter .mini-deck { opacity: 0; transform: scale(.4) translate(20px, 
 /* finale cards keep the glassy see-through look */
 .fc-fly > span { opacity: .82; }
 
-/* ==========================================================
-   PHOTO LAYERS (station photo, tinted)
-   ========================================================== */
-.tile-photo { position: absolute; inset: 0; background-repeat: no-repeat; filter: grayscale(1) contrast(1.15) brightness(1.05); mix-blend-mode: luminosity; opacity: .92; }
-.tile.has-photo::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.45)); }
-.tile.has-photo .tile-label { z-index: 2; }
-.tile.light .tile-label { color: var(--ink); }
-.dv-photo { position: absolute; inset: 0; background-image: url("images/station.jpg"); background-repeat: no-repeat; background-size: cover;
-  filter: grayscale(1) contrast(1.1); mix-blend-mode: luminosity; opacity: .75; transform: scale(1.06); }
-.d-visual .dv-art { color: rgba(255,255,255,.35); }
-.d-visual .dv-art svg { stroke-width: .6; }
-.d-visual::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,.25), transparent 30%), radial-gradient(120% 90% at 50% 50%, transparent 50%, rgba(0,0,0,.45)); }
-.ct-fallback { position: absolute; inset: -5%; background-size: cover; background-position: 50% 52%; filter: grayscale(1) contrast(1.1) brightness(.7); }
-/* readable copy over the first-person photo */
+.d-visual .dv-art { color: rgba(255,255,255,.85); }
+.d-visual::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 50% 50%, transparent 50%, rgba(0,0,0,.35)); }
+/* readable copy over the walk-in scene */
 .ct-dark::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, rgba(8,9,26,.86) 0%, rgba(8,9,26,.55) 38%, rgba(8,9,26,0) 68%); }
 @media (max-width: 820px) {
